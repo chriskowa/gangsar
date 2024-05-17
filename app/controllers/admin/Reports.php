@@ -2330,18 +2330,22 @@ class Reports extends MY_Controller
             $this->session->set_flashdata('error', lang('nothing_found'));
             redirect($_SERVER['HTTP_REFERER']);
         } else {
-            $si = "( SELECT sale_id, {$this->db->dbprefix('sale_items')}.product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->dbprefix('sale_items')}.product_name, '__', {$this->db->dbprefix('sale_items')}.quantity, (CASE WHEN {$this->db->dbprefix('sale_items')}.option_id > 0 THEN CONCAT('__',{$this->db->dbprefix('product_variants')}.name) ELSE '' END)) SEPARATOR '___') AS item_nane from {$this->db->dbprefix('sale_items')} LEFT JOIN {$this->db->dbprefix('product_variants')} ON {$this->db->dbprefix('product_variants')}.id = {$this->db->dbprefix('sale_items')}.option_id ";
-            if ($product || $serial) {
-                $si .= ' WHERE ';
+            $si = "( SELECT sale_id, {$this->db->dbprefix('sale_items')}.product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->dbprefix('sale_items')}.product_name, '__', {$this->db->dbprefix('sale_items')}.quantity, (CASE WHEN {$this->db->dbprefix('sale_items')}.option_id > 0 THEN CONCAT('__',{$this->db->dbprefix('product_variants')}.name) ELSE '' END)) SEPARATOR '___') AS item_nane, {$this->db->dbprefix('product_to_business_location')}.business_location_id 
+                FROM {$this->db->dbprefix('sale_items')} 
+                LEFT JOIN {$this->db->dbprefix('product_variants')} ON {$this->db->dbprefix('product_variants')}.id = {$this->db->dbprefix('sale_items')}.option_id
+                LEFT JOIN {$this->db->dbprefix('products')} ON {$this->db->dbprefix('products')}.id = {$this->db->dbprefix('sale_items')}.product_id
+                LEFT JOIN {$this->db->dbprefix('product_to_business_location')} ON {$this->db->dbprefix('products')}.id = {$this->db->dbprefix('product_to_business_location')}.product_id ";
+            if ($product || $serial || $business_location) {
+                $si .= ' WHERE 1=1 ';
             }
             if ($product) {
-                $si .= " {$this->db->dbprefix('sale_items')}.product_id = {$product} ";
-            }
-            if ($product && $serial) {
-                $si .= ' and ';
+                $si .= " AND {$this->db->dbprefix('sale_items')}.product_id = {$product} ";
             }
             if ($serial) {
-                $si .= " {$this->db->dbprefix('sale_items')}.serial_no LIKe '%{$serial}%' ";
+                $si .= " AND {$this->db->dbprefix('sale_items')}.serial_no LIKe '%{$serial}%' ";
+            }
+            if ($business_location) {
+                $si .= " AND {$this->db->dbprefix('product_to_business_location')}.business_location_id = {$business_location} ";
             }
             $si .= " GROUP BY {$this->db->dbprefix('sale_items')}.sale_id ) FSI";
             $this->load->library('datatables');
@@ -2360,6 +2364,9 @@ class Reports extends MY_Controller
             }
             if ($serial) {
                 $this->datatables->like('FSI.serial_no', $serial);
+            }
+            if ($business_location) {
+                $this->datatables->where('FSI.business_location_id', $business_location);
             }
             if ($biller) {
                 $this->datatables->where('sales.biller_id', $biller);
