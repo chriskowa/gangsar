@@ -395,6 +395,7 @@
                                                 echo '<th class="col-md-1">' . $this->lang->line('product_tax') . '</th>';
                                             }
                                             ?>
+                                            <th>Loc.</th>
                                             <th><?= lang('subtotal'); ?> (<span
                                                     class="currency"><?= $default_currency->code ?></span>)
                                             </th>

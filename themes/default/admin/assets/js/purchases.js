@@ -695,6 +695,7 @@ function loadItems() {
                 item_option = item.row.option,
                 item_code = item.row.code,
                 item_name = item.row.name.replace(/"/g, '&#034;').replace(/'/g, '&#039;');
+                item_bl_name = item.row.bl_name.replace(/"/g, '&#034;').replace(/'/g, '&#039;');
             var qty_received = item.row.received >= 0 ? item.row.received : item.row.qty;
             var item_supplier_part_no = item.row.supplier_part_no ? item.row.supplier_part_no : '';
             if (item.row.new_entry == 1) {
@@ -869,6 +870,7 @@ function loadItems() {
                     formatMoney(pr_tax_val * item_qty) +
                     '</span></td>';
             }
+            tr_html += '<td class="text-right">'+item_bl_name+'</td>';
             tr_html +=
                 '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' +
                 row_no +
@@ -906,6 +908,7 @@ function loadItems() {
         if (site.settings.tax1 == 1) {
             tfoot += '<th class="text-right">' + formatMoney(product_tax) + '</th>';
         }
+        tfoot += '<th class="text-right">Loc.</th>'
         tfoot +=
             '<th class="text-right">' +
             formatMoney(total) +

@@ -1912,8 +1912,16 @@ class Purchases extends MY_Controller
                     }
                 }
 
-                $pr[] = ['id' => sha1($c . $r), 'item_id' => $row->id, 'label' => $row->name . ' (' . $row->code . ')',
-                    'row'     => $row, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options, ];
+                $pr[] = [
+                    'id' => sha1($c . $r),
+                    'item_id' => $row->id,
+                    'label' => $row->name . ' (' . $row->code . ')',
+                    'row'     => $row,
+                    'tax_rate' => $tax_rate,
+                    'units' => $units,
+                    'options' => $options,
+                    'bl_name'  => $row->bl_name
+                ];
                 $r++;
             }
             $this->sma->send_json($pr);
