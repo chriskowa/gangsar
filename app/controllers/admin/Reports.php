@@ -2220,6 +2220,7 @@ class Reports extends MY_Controller
         $start_date = $this->input->get('start_date') ? $this->input->get('start_date') : null;
         $end_date = $this->input->get('end_date') ? $this->input->get('end_date') : null;
         $serial = $this->input->get('serial') ? $this->input->get('serial') : null;
+        $business_location = $this->input->get('business_location') ? $this->input->get('business_location') : null;
 
         if ($start_date) {
             $start_date = $this->sma->fld($start_date);
@@ -2934,6 +2935,7 @@ class Reports extends MY_Controller
         $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
         $this->data['users'] = $this->reports_model->getStaff();
         $this->data['warehouses'] = $this->site->getAllWarehouses();
+        $this->data['business_locations'] = $this->site->getAllBusiness_location();
         $this->data['billers'] = $this->site->getAllCompanies('biller');
         $bc = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('reports'), 'page' => lang('reports')], ['link' => '#', 'page' => lang('sales_report')]];
         $meta = ['page_title' => lang('sales_report'), 'bc' => $bc];

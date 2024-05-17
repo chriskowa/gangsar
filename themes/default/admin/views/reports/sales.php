@@ -20,6 +20,9 @@ if ($this->input->post('biller')) {
 if ($this->input->post('warehouse')) {
     $v .= '&warehouse=' . $this->input->post('warehouse');
 }
+if ($this->input->post('business_location')) {
+    $v .= '&business_location=' . $this->input->post('business_location');
+}
 if ($this->input->post('user')) {
     $v .= '&user=' . $this->input->post('user');
 }
@@ -235,6 +238,18 @@ if ($this->input->post('end_date')) {
                                     $wh[$warehouse->id] = $warehouse->name;
                                 }
                                 echo form_dropdown('warehouse', $wh, (isset($_POST['warehouse']) ? $_POST['warehouse'] : ''), 'class="form-control" id="warehouse" data-placeholder="' . $this->lang->line('select') . ' ' . $this->lang->line('warehouse') . '"');
+                                ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label" for="business_location"><?= lang('business_location'); ?></label>
+                                <?php
+                                $bl[''] = lang('select') . ' ' . lang('business_location');
+                                foreach ($business_locations as $business_location) {
+                                    $bl[$business_location->id] = $business_location->name;
+                                }
+                                echo form_dropdown('business_location', $bl, (isset($_POST['business_location']) ? $_POST['business_location'] : ''), 'class="form-control" id="business_location" data-placeholder="' . $this->lang->line('select') . ' ' . $this->lang->line('business_location') . '"');
                                 ?>
                             </div>
                         </div>
