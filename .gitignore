@@ -23,8 +23,11 @@ app/logs/*
 /assetlinks.json
 /app/config/database.php
 /app/config/config.php
+/app/.DS_Store
 /index.php
 /.htaccess
+/.DS_Store
+/composer.lock
 
 #folder
 /assets/uploads/
