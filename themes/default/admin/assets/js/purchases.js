@@ -695,7 +695,7 @@ function loadItems() {
                 item_option = item.row.option,
                 item_code = item.row.code,
                 item_name = item.row.name.replace(/"/g, '&#034;').replace(/'/g, '&#039;');
-                item_bl_name = item.row.bl_name.replace(/"/g, '&#034;').replace(/'/g, '&#039;');
+                item_bl_name = (item.row.bl_name) ? item.row.bl_name : '';
             var qty_received = item.row.received >= 0 ? item.row.received : item.row.qty;
             var item_supplier_part_no = item.row.supplier_part_no ? item.row.supplier_part_no : '';
             if (item.row.new_entry == 1) {
