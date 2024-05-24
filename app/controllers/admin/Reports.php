@@ -2236,6 +2236,8 @@ class Reports extends MY_Controller
                 ->from('sales')
                 ->join('sale_items', 'sale_items.sale_id=sales.id', 'left')
                 ->join('warehouses', 'warehouses.id=sales.warehouse_id', 'left')
+                ->join('products', 'products.id=sale_items.product_id', 'left')
+                ->join('product_to_business_location', 'product_to_business_location.product_id=products.id', 'left')
                 ->group_by('sales.id')
                 ->order_by('sales.date desc');
 
@@ -2256,6 +2258,9 @@ class Reports extends MY_Controller
             }
             if ($warehouse) {
                 $this->db->where('sales.warehouse_id', $warehouse);
+            }
+            if ($business_location) {
+                $this->db->where('product_to_business_location.business_location_id', $business_location);
             }
             if ($reference_no) {
                 $this->db->like('sales.reference_no', $reference_no, 'both');
