@@ -23,7 +23,7 @@ class Products extends MY_Controller
         $this->popup_attributes = ['width' => '900', 'height' => '600', 'window_name' => 'sma_popup', 'menubar' => 'yes', 'scrollbars' => 'yes', 'status' => 'no', 'resizable' => 'yes', 'screenx' => '0', 'screeny' => '0'];
     }
 
-    /* ------------------------------------------------------- */
+    /* ------------------------------------------------------- */    
 
     public function add($id = null)
     {
@@ -51,7 +51,7 @@ class Products extends MY_Controller
                 'name'              => $this->input->post('name'),
                 'type'              => $this->input->post('type'),
                 'brand'             => $this->input->post('brand'),
-                'business_location' => $this->input->post('business_location'),
+                'business_location' => 1,
                 'category_id'       => $this->input->post('category'),
                 'subcategory_id'    => $this->input->post('subcategory') ? $this->input->post('subcategory') : null,
                 'cost'              => $this->sma->formatDecimal($this->input->post('cost')),
@@ -100,6 +100,7 @@ class Products extends MY_Controller
             ];
             $warehouse_qty = null;
             $product_attributes = null;
+            $business_locations = null;
             $this->load->library('upload');
             if ('standard' == $this->input->post('type')) {
                 $wh_total_quantity = 0;
@@ -140,6 +141,13 @@ class Products extends MY_Controller
                     $this->form_validation->set_rules('wh_pr_qty_issue', 'wh_pr_qty_issue', 'required');
                     $this->form_validation->set_message('required', lang('wh_pr_qty_issue'));
                 }
+
+                // Mendapatkan data dari form
+                
+                $business_locations = $this->input->post('business_location');  
+
+                // Simpan data ke tabel sma_product_to_business_location
+                //$this->db->insert_batch('sma_product_to_business_location', $data);
             }
 
             if ('service' == $this->input->post('type')) {
@@ -309,7 +317,7 @@ class Products extends MY_Controller
             // $this->sma->print_arrays($data, $warehouse_qty, $product_attributes);
         }
 
-        if (true == $this->form_validation->run() && $this->products_model->addProduct($data, $items, $warehouse_qty, $product_attributes, $photos)) {
+        if (true == $this->form_validation->run() && $this->products_model->addProduct($data, $items, $warehouse_qty, $product_attributes, $photos, $business_locations)) {
             $this->session->set_flashdata('message', lang('product_added'));
             admin_redirect('products');
         } else {
@@ -888,6 +896,7 @@ class Products extends MY_Controller
         $warehouses = $this->site->getAllWarehouses();
         $warehouses_products = $this->products_model->getAllWarehousesWithPQ($id);
         $product = $this->site->getProductByID($id);
+        //$business_locations = $this->products_model->getAllBusinessLocations();
         if (!$id || !$product) {
             $this->session->set_flashdata('error', lang('prduct_not_found'));
             redirect($_SERVER['HTTP_REFERER']);
@@ -912,14 +921,13 @@ class Products extends MY_Controller
         $this->form_validation->set_rules('digital_file', lang('digital_file'), 'xss_clean');
         $this->form_validation->set_rules('userfile', lang('product_gallery_images'), 'xss_clean');
 
-        if (true == $this->form_validation->run('products/add')) {
+        if (true == $this->form_validation->run('products/edit')) {
             // dd(stripslashes($this->input->post('product_details')));
             $data = ['code'         => $this->input->post('code'),
                 'barcode_symbology' => $this->input->post('barcode_symbology'),
                 'name'              => $this->input->post('name'),
                 'type'              => $this->input->post('type'),
-                'brand'             => $this->input->post('brand'),
-                'business_location' => $this->input->post('business_location'),
+                'brand'             => $this->input->post('brand'),                
                 'category_id'       => $this->input->post('category'),
                 'subcategory_id'    => $this->input->post('subcategory') ? $this->input->post('subcategory') : null,
                 'cost'              => $this->sma->formatDecimal($this->input->post('cost')),
@@ -966,6 +974,8 @@ class Products extends MY_Controller
                 'hide_pos'          => $this->input->post('hide_pos') ? $this->input->post('hide_pos') : 0,
                 'second_name'       => $this->input->post('second_name'),
             ];
+            $business_locations = $this->input->post('business_location');
+            
             $warehouse_qty = null;
             $product_attributes = null;
             $update_variants = [];
@@ -1180,7 +1190,7 @@ class Products extends MY_Controller
             // $this->sma->print_arrays($data, $warehouse_qty, $update_variants, $product_attributes, $photos, $items);
         }
 
-        if (true == $this->form_validation->run() && $this->products_model->updateProduct($id, $data, $items, $warehouse_qty, $product_attributes, $photos, $update_variants)) {
+        if (true == $this->form_validation->run() && $this->products_model->updateProduct($id, $data, $items, $warehouse_qty, $product_attributes, $photos, $update_variants, $business_locations)) {
             $this->session->set_flashdata('message', lang('product_updated'));
             admin_redirect('products');
         } else {
@@ -1189,7 +1199,7 @@ class Products extends MY_Controller
             $this->data['categories'] = $this->site->getAllCategories();
             $this->data['tax_rates'] = $this->site->getAllTaxRates();
             $this->data['brands'] = $this->site->getAllBrands();
-            $this->data['business_location'] = $this->site->getAllBusiness_location();
+            $this->data['business_locations'] = $business_locations = $this->products_model->getAllBusinessLocationsWithPrices($id);
             $this->data['base_units'] = $this->site->getAllBaseUnits();
             $this->data['warehouses'] = $warehouses;
             $this->data['warehouses_products'] = $warehouses_products;

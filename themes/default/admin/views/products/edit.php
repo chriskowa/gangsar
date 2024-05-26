@@ -125,16 +125,42 @@ if (!empty($variants)) {
                         echo form_dropdown('brand', $br, (isset($_POST['brand']) ? $_POST['brand'] : ($product ? $product->brand : '')), 'class="form-control select" id="brand" placeholder="' . lang('select') . ' ' . lang('brand') . '" style="width:100%"')
                         ?>
                     </div>
+
                     <div class="form-group all">
                         <?= lang('business_location', 'business_location') ?>
                         <?php
-                        $br[''] = '';
-                        foreach ($business_location as $business_location) {
-                            $br[$business_location->id] = $business_location->name;
+                        if (!empty($business_locations)) {
+                            
+                            foreach ($business_locations as $location) {
+                                // Determine if this location should be checked
+                                $isChecked = false;                                                          
+                                    
+                                    
+                                if (!empty($location->price)) {
+                                    $isChecked = true;
+                                }
+                                
+                                
+                                echo '<div class="checkbox">';
+                                echo '<label>';
+                                echo form_checkbox('business_location[]', $location->id, $isChecked, 'class="form-control" id="business_location_' . $location->id . '"');
+                                echo ' ' . $location->name;
+                                echo '</label>';
+                                echo form_input(array(
+                                    'name' => 'price_' . $location->id,
+                                    'id' => 'price_' . $location->id,
+                                    'class' => 'form-control',
+                                    'placeholder' => 'Price',
+                                    'value' => set_value('price_' . $location->id, isset($location->price) ? $location->price : '')
+                                ));
+                                echo '</div>';
+                            }
+                        } else {
+                            echo lang('no_business_locations_available');
                         }
-                        echo form_dropdown('business_location', $br, (isset($_POST['business_location']) ? $_POST['business_location'] : ($product ? $product->business_location : '')), 'class="form-control select" id="business_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"')
                         ?>
                     </div>
+                    
                     <div class="form-group all">
                         <?= lang('category', 'category') ?>
                         <?php

@@ -139,13 +139,28 @@ if (!empty($variants)) {
                     <div class="form-group all">
                         <?= lang('business_location', 'business_location') ?>
                         <?php
-                        $br[''] = '';
-                        foreach ($business_location as $business_location) {
-                            $br[$business_location->id] = $business_location->name;
+                        if (!empty($business_location)) {
+                            foreach ($business_location as $location) {
+                                $isChecked = isset($_POST['business_location']) && in_array($location->id, $_POST['business_location']) 
+                                            || (isset($product) && in_array($location->id, explode(',', $product->business_location)));
+
+                                // Set the price if available
+                                $price = isset($product) && isset($product->prices[$location->id]) ? $product->prices[$location->id] : '';
+
+                                echo '<div class="checkbox">';
+                                echo '<label>';
+                                echo form_checkbox('business_location[]', $location->id, $isChecked, 'class="form-control" id="business_location_' . $location->id . '"');
+                                echo ' ' . $location->name;
+                                echo '</label>';
+                                echo '<input type="text" name="price_' . $location->id . '" value="' . htmlspecialchars($price) . '" class="form-control" placeholder="Price">';
+                                echo '</div>';
+                            }
+                        } else {
+                            echo lang('no_business_locations_available');
                         }
-                        echo form_dropdown('business_location', $br, ($_POST['business_location'] ?? ($product ? $product->business_location : '')), 'class="form-control select" id="business_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"')
                         ?>
                     </div>
+
                     <div class="form-group all">
                         <?= lang('category', 'category') ?>
                         <?php
