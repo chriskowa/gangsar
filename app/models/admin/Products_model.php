@@ -60,7 +60,52 @@ class Products_model extends CI_Model
         return false;
     }
 
-    public function addProduct($data, $items, $warehouse_qty, $product_attributes, $photos)
+    public function addProductToBusinessLocation($product_id, $business_location_id, $price)
+    {
+        $data = array(
+            'product_id' => $product_id,
+            'business_location_id' => $business_location_id,
+            'price' => $price
+        );
+        $this->db->insert('product_to_business_location', $data);
+    }
+
+    public function getPriceForLocation($product_id, $location_id)
+    {
+        $this->db->select('price');
+        $this->db->from('product_to_business_location');
+        $this->db->where('product_id', $product_id);
+        $this->db->where('business_location_id', $location_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->row()->price;
+        } else {
+            return '';
+        }
+    }
+
+    public function getAllBusinessLocations()
+    {
+        $query = $this->db->get('business_location'); // Assuming the table name is 'business_locations'
+        return $query->result();
+    }
+
+    public function getAllBusinessLocationsWithPrices($product_id)
+    {
+        $this->db->select('bl.id, bl.name, pbl.price');
+        $this->db->from('business_location bl');
+        $this->db->join('product_to_business_location pbl', 'bl.id = pbl.business_location_id AND pbl.product_id = ' . $this->db->escape($product_id), 'left');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function deleteProductBusinessLocations($product_id)
+    {
+        $this->db->where('product_id', $product_id);
+        $this->db->delete('product_to_business_location');
+    }
+
+    public function addProduct($data, $items, $warehouse_qty, $product_attributes, $photos, $business_locations)
     {
         if ($this->db->insert('products', $data)) {
             $product_id = $this->db->insert_id();
@@ -76,6 +121,15 @@ class Products_model extends CI_Model
             if ($data['type'] != 'standard') {
                 foreach ($warehouses as $warehouse) {
                     $this->db->insert('warehouses_products', ['product_id' => $product_id, 'warehouse_id' => $warehouse->id, 'quantity' => 0]);
+                }
+            }
+
+            if ($business_locations) {
+                if (!empty($business_locations)) {
+                    foreach ($business_locations as $location_id) {
+                        $price = $this->input->post('price_' . $location_id);
+                        $this->addProductToBusinessLocation($product_id, $location_id, $price);
+                    }
                 }
             }
 
@@ -987,9 +1041,9 @@ class Products_model extends CI_Model
         return false;
     }
 
-    public function updateProduct($id, $data, $items, $warehouse_qty, $product_attributes, $photos, $update_variants)
-    {
-        if ($this->db->update('products', $data, ['id' => $id])) {
+    public function updateProduct($id, $data, $items, $warehouse_qty, $product_attributes, $photos, $update_variants, $business_locations)
+    {        
+        if ($this->db->update('products', $data, ['id' => $id])) {            
             if ($items) {
                 $this->db->delete('combo_items', ['product_id' => $id]);
                 foreach ($items as $item) {
@@ -1003,6 +1057,18 @@ class Products_model extends CI_Model
             if ($warehouse_qty && !empty($warehouse_qty)) {
                 foreach ($warehouse_qty as $wh_qty) {
                     $this->db->update('warehouses_products', ['rack' => $wh_qty['rack']], ['product_id' => $id, 'warehouse_id' => $wh_qty['warehouse_id']]);
+                }
+            }
+
+            if (!empty($business_locations)) {
+                $product_id = $id;
+                // First, delete existing entries for this product
+                $this->deleteProductBusinessLocations($product_id);
+
+                // Then, insert new entries
+                foreach ($business_locations as $location_id) {
+                    $price = $this->input->post('price_' . $location_id);
+                    $this->addProductToBusinessLocation($product_id, $location_id, $price);
                 }
             }
 
