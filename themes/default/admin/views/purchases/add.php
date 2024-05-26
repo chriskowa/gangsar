@@ -324,7 +324,7 @@
                       <?= lang('supplier', 'posupplier'); ?>
                       <?php if ($Owner || $Admin || $GP['suppliers-add'] || $GP['suppliers-index']) {
                       ?><div class="input-group"><?php
-                                                              } ?>
+                                                } ?>
                         <input type="hidden" name="supplier" value="" id="posupplier" class="form-control" style="width:100%;" placeholder="<?= lang('select') . ' ' . lang('supplier') ?>">
                         <input type="hidden" name="supplier_id" value="" id="supplier_id" class="form-control">
                         <?php if ($Owner || $Admin || $GP['suppliers-index']) {
@@ -506,13 +506,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"><i class="fa fa-2x">&times;</i></span><span class="sr-only"><?= lang('close'); ?></span></button>
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true"><i class="fa fa-2x">&times;</i></span><span class="sr-only"><?= lang('close'); ?></span>
+        </button>
         <h4 class="modal-title" id="prModalLabel"></h4>
       </div>
-      <div class="modal-body" id="pr_popover_content">
-        <form class="form-horizontal" role="form">
-          <?php if ($Settings->tax1) {
-          ?>
+      <form class="form-horizontal" id="pr_popover_content" role="form">
+        <div class="modal-body">
+          <?php if ($Settings->tax1) { ?>
             <div class="form-group">
               <label class="col-sm-4 control-label"><?= lang('product_tax') ?></label>
               <div class="col-sm-8">
@@ -524,26 +525,21 @@
                 echo form_dropdown('ptax', $tr, '', 'id="ptax" class="form-control pos-input-tip" style="width:100%;"'); ?>
               </div>
             </div>
-          <?php
-          } ?>
+          <?php } ?>
           <div class="form-group">
             <label for="pquantity" class="col-sm-4 control-label"><?= lang('quantity') ?></label>
-
             <div class="col-sm-8">
               <input type="text" class="form-control" id="pquantity">
             </div>
           </div>
-          <?php if ($Settings->product_expiry) {
-          ?>
+          <?php if ($Settings->product_expiry) { ?>
             <div class="form-group">
               <label for="pexpiry" class="col-sm-4 control-label"><?= lang('product_expiry') ?></label>
-
               <div class="col-sm-8">
                 <input type="text" class="form-control date" id="pexpiry">
               </div>
             </div>
-          <?php
-          } ?>
+          <?php } ?>
           <div class="form-group">
             <label for="punit" class="col-sm-4 control-label"><?= lang('product_unit') ?></label>
             <div class="col-sm-8">
@@ -557,36 +553,35 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-4 control-label"><?= lang('business_location') ?></label>
-            <div class="col-sm-8">
-              <?php
-              $bl[''] = '';
-              foreach ($business_locations as $business_location) {
-                $bl[$business_location->id] = $business_location->name;
-              }
-              echo form_dropdown('business_location', $bl, '', 'id="pbusiness_location" class="form-control input-tip select" data-placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%;" '); ?>
+            <label class="col-sm-4 control-label">Business Location</label>
+            <div class="col-sm-8" style="padding-top:7px">
+              <?php foreach ($business_locations as $index => $business_location) { ?>
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;" id="pbusinesslocation">
+                  <div style="margin-right: 1rem">
+                    <input type="checkbox" value="<?= $business_location->id; ?>" name="location_id[]" data-index="<?= $index; ?>" />
+                  </div>
+                  <div style="margin-right: 2rem">
+                    <span><?= $business_location->name; ?></span>
+                  </div>
+                  <div>
+                    <input type="text" class="form-control" placeholder="Harga Produk" value="" name="price[]" data-index="<?= $index; ?>" />
+                  </div>
+                </div>
+              <?php } ?>
             </div>
           </div>
-          <?php if ($Settings->product_discount) {
-          ?>
+          <?php if ($Settings->product_discount) { ?>
             <div class="form-group">
               <label for="pdiscount" class="col-sm-4 control-label"><?= lang('product_discount') ?></label>
               <div class="col-sm-8">
                 <input type="text" class="form-control" id="pdiscount">
               </div>
             </div>
-          <?php
-          } ?>
+          <?php } ?>
           <div class="form-group">
             <label for="pcost" class="col-sm-4 control-label"><?= lang('unit_cost') ?></label>
             <div class="col-sm-8">
               <input type="text" class="form-control" id="pcost">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="potherPrice" class="col-sm-4 control-label">Harga CV</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" id="potherPrice">
             </div>
           </div>
           <div class="form-group">
@@ -627,11 +622,11 @@
           <input type="hidden" id="old_qty" value="" />
           <input type="hidden" id="old_cost" value="" />
           <input type="hidden" id="row_id" value="" />
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="editItem"><?= lang('submit') ?></button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="editItem"><?= lang('submit') ?></button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

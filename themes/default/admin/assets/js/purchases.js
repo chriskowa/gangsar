@@ -456,7 +456,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('click', '#calculate_unit_price', function () {
+    $(document).on('click', '#calculate_unit_price', function (e) {
         var row = $('#' + $('#row_id').val());
         var item_id = row.attr('data-item-id');
         var item = poitems[item_id];
@@ -476,7 +476,8 @@ $(document).ready(function () {
     /* -----------------------
      * Edit Row Method
      ----------------------- */
-    $(document).on('click', '#editItem', function () {
+    $(document).on('click', '#editItem', function (e) {
+        e.preventDefault();
         var row = $('#' + $('#row_id').val());
         var item_id = row.attr('data-item-id'),
             new_pr_tax = $('#ptax').val(),
@@ -505,13 +506,24 @@ $(document).ready(function () {
             });
         }
 
-        var business_location = $('#pbusiness_location').val();
+        var business_location = [];
+        $('input[type="checkbox"][name="location_id[]"]').each(function() {
+            if ($(this).is(':checked')) {
+                var location_id = $(this).val();
+                var index       = $(this).data('index');
+                var price       = $('input[type="text"][name="price[]"][data-index="' + index + '"]').val();
+                business_location.push({
+                    'id': location_id,
+                    'price': price
+                });
+            }
+        });
 
         (poitems[item_id].row.fup = 1),
             (poitems[item_id].row.qty = parseFloat($('#pquantity').val())),
             (poitems[item_id].row.base_quantity = parseFloat(base_quantity)),
             (poitems[item_id].row.unit = unit),
-            (poitems[item_id].row.business_location = business_location),
+            (poitems[item_id].business_location = business_location),
             (poitems[item_id].row.real_unit_cost = parseFloat($('#pcost').val())),
             (poitems[item_id].row.tax_rate = new_pr_tax),
             (poitems[item_id].tax_rate = new_pr_tax_rate),
@@ -519,9 +531,19 @@ $(document).ready(function () {
             (poitems[item_id].row.option = $('#poption').val()),
             (poitems[item_id].row.expiry = $('#pexpiry').val() ? $('#pexpiry').val() : '');
         localStorage.setItem('poitems', JSON.stringify(poitems));
-        $('#prModal').modal('hide');
-        loadItems();
-        return;
+
+
+        var produk_pajak    = $('#ptax').val();
+        var produk_quantity = $('#pquantity').val();
+        var produk_discount = $("#pdiscount").val();
+        var produk_cost     = $('#pcost').val();
+        var produk_price    = $('#pprice').val();
+
+        console.log(poitems);
+
+        // $('#prModal').modal('hide');
+        // loadItems();
+        // return;
     });
 
     /* ------------------------------
