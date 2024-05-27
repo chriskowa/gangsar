@@ -703,15 +703,15 @@
                                             <a href="<?= admin_url('system_settings/price_groups') ?>">
                                                 <i class="fa fa-dollar"></i><span class="text"> <?= lang('price_groups'); ?></span>
                                             </a>
+                                        </li>                                        
+                                        <li id="system_settings_expense_categories">
+                                            <a href="<?= admin_url('system_settings/expense_categories') ?>">
+                                                <i class="fa fa-folder-open"></i><span class="text"> <?= lang('expense_categories'); ?></span>
+                                            </a>
                                         </li>
                                         <li id="system_settings_categories">
                                             <a href="<?= admin_url('system_settings/categories') ?>">
                                                 <i class="fa fa-folder-open"></i><span class="text"> <?= lang('categories'); ?></span>
-                                            </a>
-                                        </li>
-                                        <li id="system_settings_expense_categories">
-                                            <a href="<?= admin_url('system_settings/expense_categories') ?>">
-                                                <i class="fa fa-folder-open"></i><span class="text"> <?= lang('expense_categories'); ?></span>
                                             </a>
                                         </li>
                                         <li id="system_settings_units">
@@ -722,6 +722,11 @@
                                         <li id="system_settings_brands">
                                             <a href="<?= admin_url('system_settings/brands') ?>">
                                                 <i class="fa fa-th-list"></i><span class="text"> <?= lang('brands'); ?></span>
+                                            </a>
+                                        </li>
+                                        <li id="system_settings_sizes">
+                                            <a href="<?= admin_url('system_settings/sizes') ?>">
+                                                <i class="fa fa-th-list"></i><span class="text"> Ukuran</span>
                                             </a>
                                         </li>
                                         <li id="system_settings_variants">

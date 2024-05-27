@@ -88,6 +88,67 @@ class system_settings extends MY_Controller
         }
     }
 
+    public function add_size()
+    {
+        $this->form_validation->set_rules('name', lang('size_name'), 'trim|required|is_unique[sizes.name]');
+        $this->form_validation->set_rules('slug', lang('slug'), 'trim|required|is_unique[sizes.slug]|alpha_dash');
+        $this->form_validation->set_rules('description', lang('description'), 'trim|required');
+
+        if ($this->form_validation->run() == true) {
+            $data = [
+                'name'        => $this->input->post('name'),
+                'code'        => $this->input->post('code'),
+                'slug'        => $this->input->post('slug'),
+                'description' => $this->input->post('description'),
+            ];
+
+            if ($_FILES['userfile']['size'] > 0) {
+                $this->load->library('upload');
+                $config['upload_path']   = $this->upload_path;
+                $config['allowed_types'] = $this->image_types;
+                $config['max_size']      = $this->allowed_file_size;
+                $config['max_width']     = $this->Settings->iwidth;
+                $config['max_height']    = $this->Settings->iheight;
+                $config['overwrite']     = false;
+                $config['encrypt_name']  = true;
+                $config['max_filename']  = 25;
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload()) {
+                    $error = $this->upload->display_errors();
+                    $this->session->set_flashdata('error', $error);
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+                $photo         = $this->upload->file_name;
+                $data['image'] = $photo;
+                $this->load->library('image_lib');
+                $config['image_library']  = 'gd2';
+                $config['source_image']   = $this->upload_path . $photo;
+                $config['new_image']      = $this->thumbs_path . $photo;
+                $config['maintain_ratio'] = true;
+                $config['width']          = $this->Settings->twidth;
+                $config['height']         = $this->Settings->theight;
+                $this->image_lib->clear();
+                $this->image_lib->initialize($config);
+                if (!$this->image_lib->resize()) {
+                    echo $this->image_lib->display_errors();
+                }
+                $this->image_lib->clear();
+            }
+        } elseif ($this->input->post('add_size')) {
+            $this->session->set_flashdata('error', validation_errors());
+            admin_redirect('system_settings/sizes');
+        }
+
+        if ($this->form_validation->run() == true && $this->settings_model->addSize($data)) {
+            $this->session->set_flashdata('message', lang('size_added'));
+            admin_redirect('system_settings/sizes');
+        } else {
+            $this->data['error']    = validation_errors() ? validation_errors() : $this->session->flashdata('error');
+            $this->data['modal_js'] = $this->site->modal_js();
+            $this->load->view($this->theme . 'settings/add_size', $this->data);
+        }
+    }
+
     public function add_category()
     {
         $this->load->helper('security');
@@ -615,6 +676,61 @@ class system_settings extends MY_Controller
         $this->page_construct('settings/brands', $meta, $this->data);
     }
 
+    public function size_actions()
+    {
+        $this->form_validation->set_rules('form_action', lang('form_action'), 'required');
+
+        if ($this->form_validation->run() == true) {
+            if (!empty($_POST['val'])) {
+                if ($this->input->post('form_action') == 'delete') {
+                    foreach ($_POST['val'] as $id) {
+                        $this->settings_model->deleteSize($id);
+                    }
+                    $this->session->set_flashdata('message', lang('sizes_deleted'));
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+
+                if ($this->input->post('form_action') == 'export_excel') {
+                    $this->load->library('excel');
+                    $this->excel->setActiveSheetIndex(0);
+                    $this->excel->getActiveSheet()->setTitle(lang('sizes'));
+                    $this->excel->getActiveSheet()->SetCellValue('A1', lang('name'));
+                    $this->excel->getActiveSheet()->SetCellValue('B1', lang('code'));
+                    $this->excel->getActiveSheet()->SetCellValue('C1', lang('image'));
+
+                    $row = 2;
+                    foreach ($_POST['val'] as $id) {
+                        $size = $this->site->getSizeByID($id);
+                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $size->name);
+                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $size->code);
+                        $this->excel->getActiveSheet()->SetCellValue('C' . $row, $size->image);
+                        $row++;
+                    }
+
+                    $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+                    $this->excel->getDefaultStyle()->getAlignment()->setVertical('center');
+                    $filename = 'sizes_' . date('Y_m_d_H_i_s');
+                    $this->load->helper('excel');
+                    create_excel($this->excel, $filename);
+                }
+            } else {
+                $this->session->set_flashdata('error', lang('no_record_selected'));
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $this->session->set_flashdata('error', validation_errors());
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    public function sizes()
+    {
+        $this->data['error'] = validation_errors() ? validation_errors() : $this->session->flashdata('error');
+        $bc                  = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('system_settings'), 'page' => lang('system_settings')], ['link' => '#', 'page' => lang('sizes')]];
+        $meta                = ['page_title' => lang('sizes'), 'bc' => $bc];
+        $this->page_construct('settings/sizes', $meta, $this->data);
+    }
+
     public function categories()
     {
         $this->data['error'] = validation_errors() ? validation_errors() : $this->session->flashdata('error');
@@ -936,6 +1052,20 @@ class system_settings extends MY_Controller
         }
     }
 
+    public function delete_size($id = null)
+    {
+        if (!$id) {
+            $this->sma->send_json(['error' => 1, 'msg' => lang('id_not_found')]);
+        }
+        if ($this->settings_model->sizeHasProducts($id)) {
+            $this->sma->send_json(['error' => 1, 'msg' => lang('size_has_products')]);
+        }
+
+        if ($this->settings_model->deleteSize($id)) {
+            $this->sma->send_json(['error' => 0, 'msg' => lang('size_deleted')]);
+        }
+    }
+
     public function delete_category($id = null)
     {
         if (!$id) {
@@ -1177,6 +1307,75 @@ class system_settings extends MY_Controller
             $this->data['modal_js'] = $this->site->modal_js();
             $this->data['brand']    = $brand_details;
             $this->load->view($this->theme . 'settings/edit_brand', $this->data);
+        }
+    }
+
+    public function edit_size($id = null)
+    {
+        $this->form_validation->set_rules('name', lang('size_name'), 'trim|required|alpha_numeric_spaces');
+        $size_details = $this->site->getSizeByID($id);
+        if ($this->input->post('name') != $brand_details->name) {
+            $this->form_validation->set_rules('name', lang('size_name'), 'required|is_unique[sizes.name]');
+        }
+        $this->form_validation->set_rules('slug', lang('slug'), 'required|alpha_dash');
+        if ($this->input->post('slug') != $size_details->slug) {
+            $this->form_validation->set_rules('slug', lang('slug'), 'required|alpha_dash|is_unique[sizes.slug]');
+        }
+        $this->form_validation->set_rules('description', lang('description'), 'trim|required');
+
+        if ($this->form_validation->run() == true) {
+            $data = [
+                'name'        => $this->input->post('name'),
+                'code'        => $this->input->post('code'),
+                'slug'        => $this->input->post('slug'),
+                'description' => $this->input->post('description'),
+            ];
+
+            if ($_FILES['userfile']['size'] > 0) {
+                $this->load->library('upload');
+                $config['upload_path']   = $this->upload_path;
+                $config['allowed_types'] = $this->image_types;
+                $config['max_size']      = $this->allowed_file_size;
+                $config['max_width']     = $this->Settings->iwidth;
+                $config['max_height']    = $this->Settings->iheight;
+                $config['overwrite']     = false;
+                $config['encrypt_name']  = true;
+                $config['max_filename']  = 25;
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload()) {
+                    $error = $this->upload->display_errors();
+                    $this->session->set_flashdata('error', $error);
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+                $photo         = $this->upload->file_name;
+                $data['image'] = $photo;
+                $this->load->library('image_lib');
+                $config['image_library']  = 'gd2';
+                $config['source_image']   = $this->upload_path . $photo;
+                $config['new_image']      = $this->thumbs_path . $photo;
+                $config['maintain_ratio'] = true;
+                $config['width']          = $this->Settings->twidth;
+                $config['height']         = $this->Settings->theight;
+                $this->image_lib->clear();
+                $this->image_lib->initialize($config);
+                if (!$this->image_lib->resize()) {
+                    echo $this->image_lib->display_errors();
+                }
+                $this->image_lib->clear();
+            }
+        } elseif ($this->input->post('edit_size')) {
+            $this->session->set_flashdata('error', validation_errors());
+            admin_redirect('system_settings/sizes');
+        }
+
+        if ($this->form_validation->run() == true && $this->settings_model->updateSize($id, $data)) {
+            $this->session->set_flashdata('message', lang('size_updated'));
+            admin_redirect('system_settings/sizes');
+        } else {
+            $this->data['error']    = validation_errors() ? validation_errors() : $this->session->flashdata('error');
+            $this->data['modal_js'] = $this->site->modal_js();
+            $this->data['size']    = $size_details;
+            $this->load->view($this->theme . 'settings/edit_size', $this->data);
         }
     }
 
@@ -1781,6 +1980,17 @@ class system_settings extends MY_Controller
             ->select('id, image, code, name, slug')
             ->from('brands')
             ->add_column('Actions', "<div class=\"text-center\"><a href='" . admin_url('system_settings/edit_brand/$1') . "' data-toggle='modal' data-target='#myModal' class='tip' title='" . lang('edit_brand') . "'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang('delete_brand') . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('system_settings/delete_brand/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", 'id');
+
+        echo $this->datatables->generate();
+    }
+
+    public function getSizes()
+    {
+        $this->load->library('datatables');
+        $this->datatables
+            ->select('id, image, code, name, slug')
+            ->from('sizes')
+            ->add_column('Actions', "<div class=\"text-center\"><a href='" . admin_url('system_settings/edit_size/$1') . "' data-toggle='modal' data-target='#myModal' class='tip' title='" . lang('edit_brand') . "'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang('delete_size') . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('system_settings/delete_size/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", 'id');
 
         echo $this->datatables->generate();
     }

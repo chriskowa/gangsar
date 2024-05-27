@@ -51,6 +51,7 @@ class Products extends MY_Controller
                 'name'              => $this->input->post('name'),
                 'type'              => $this->input->post('type'),
                 'brand'             => $this->input->post('brand'),
+                'size'             => $this->input->post('size'),
                 'business_location' => 1,
                 'category_id'       => $this->input->post('category'),
                 'subcategory_id'    => $this->input->post('subcategory') ? $this->input->post('subcategory') : null,
@@ -326,6 +327,7 @@ class Products extends MY_Controller
             $this->data['categories'] = $this->site->getAllCategories();
             $this->data['tax_rates'] = $this->site->getAllTaxRates();
             $this->data['brands'] = $this->site->getAllBrands();
+            $this->data['sizes'] = $this->site->getAllSizes();
             $this->data['business_location'] = $this->site->getAllBusiness_location();
             $this->data['base_units'] = $this->site->getAllBaseUnits();
             $this->data['warehouses'] = $warehouses;
@@ -928,6 +930,7 @@ class Products extends MY_Controller
                 'name'              => $this->input->post('name'),
                 'type'              => $this->input->post('type'),
                 'brand'             => $this->input->post('brand'),                
+                'size'             => $this->input->post('size'),                
                 'category_id'       => $this->input->post('category'),
                 'subcategory_id'    => $this->input->post('subcategory') ? $this->input->post('subcategory') : null,
                 'cost'              => $this->sma->formatDecimal($this->input->post('cost')),
@@ -1199,6 +1202,7 @@ class Products extends MY_Controller
             $this->data['categories'] = $this->site->getAllCategories();
             $this->data['tax_rates'] = $this->site->getAllTaxRates();
             $this->data['brands'] = $this->site->getAllBrands();
+            $this->data['sizes'] = $this->site->getAllSizes();
             $this->data['business_locations'] = $business_locations = $this->products_model->getAllBusinessLocationsWithPrices($id);
             $this->data['base_units'] = $this->site->getAllBaseUnits();
             $this->data['warehouses'] = $warehouses;
@@ -1547,7 +1551,7 @@ class Products extends MY_Controller
         $this->load->library('datatables');
         if ($warehouse_id) {
             $this->datatables
-            ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as brand, {$this->db->dbprefix('categories')}.name as cname, cost as cost, price as price, COALESCE(wp.quantity, 0) as quantity, {$this->db->dbprefix('units')}.code as unit, wp.rack as rack, alert_quantity", false)
+            ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('sizes')}.name as size, {$this->db->dbprefix('categories')}.name as cname, cost as cost, price as price, COALESCE(wp.quantity, 0) as quantity, {$this->db->dbprefix('units')}.code as unit, wp.rack as rack, alert_quantity", false)
             ->from('products');
             if ($this->Settings->display_all_products) {
                 $this->datatables->join('warehouses_products wp', "wp.product_id=products.id AND wp.warehouse_id={$warehouse_id}", 'left');
@@ -1559,15 +1563,15 @@ class Products extends MY_Controller
             }
             $this->datatables->join('categories', 'products.category_id=categories.id', 'left')
             ->join('units', 'products.unit=units.id', 'left')
-            ->join('brands', 'products.brand=brands.id', 'left');
+            ->join('sizes', 'products.size=sizes.id', 'left');
         // ->group_by("products.id");
         } else {
             $this->datatables
-                ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('brands')}.name as brand, {$this->db->dbprefix('categories')}.name as cname, cost as cost, price as price, COALESCE(quantity, 0) as quantity, {$this->db->dbprefix('units')}.code as unit, '' as rack, alert_quantity", false)
+                ->select($this->db->dbprefix('products') . ".id as productid, {$this->db->dbprefix('products')}.image as image, {$this->db->dbprefix('products')}.code as code, {$this->db->dbprefix('products')}.name as name, {$this->db->dbprefix('sizes')}.name as size, {$this->db->dbprefix('categories')}.name as cname, cost as cost, price as price, COALESCE(quantity, 0) as quantity, {$this->db->dbprefix('units')}.code as unit, '' as rack, alert_quantity", false)
                 ->from('products')
                 ->join('categories', 'products.category_id=categories.id', 'left')
                 ->join('units', 'products.unit=units.id', 'left')
-                ->join('brands', 'products.brand=brands.id', 'left')
+                ->join('sizes', 'products.size=sizes.id', 'left')
                 ->group_by('products.id');
         }
         if (!$this->Owner && !$this->Admin) {

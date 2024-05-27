@@ -357,6 +357,18 @@ class Site extends CI_Model
         return false;
     }
 
+    public function getAllSizes()
+    {
+        $q = $this->db->get('sizes');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
+    }
+
     public function getAllCategories()
     {
         $this->db->where('parent_id', null)->or_where('parent_id', 0)->order_by('name');
@@ -462,6 +474,15 @@ class Site extends CI_Model
     public function getBrandByID($id)
     {
         $q = $this->db->get_where('brands', ['id' => $id], 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return false;
+    }
+
+    public function getSizeByID($id)
+    {
+        $q = $this->db->get_where('sizes', ['id' => $id], 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }

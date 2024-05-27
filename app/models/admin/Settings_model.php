@@ -25,6 +25,22 @@ class Settings_model extends CI_Model
         return false;
     }
 
+    public function addSize($data)
+    {
+        if ($this->db->insert('sizes', $data)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function addSizes($data)
+    {
+        if ($this->db->insert_batch('sizes', $data)) {
+            return true;
+        }
+        return false;
+    }
+
     public function addCategories($categories, $subcategories)
     {
         $result = false;
@@ -160,6 +176,15 @@ class Settings_model extends CI_Model
         return false;
     }
 
+    public function sizeHasProducts($size_id)
+    {
+        $q = $this->db->get_where('products', ['size' => $size_id], 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return false;
+    }
+
     public function checkGroupUsers($id)
     {
         $q = $this->db->get_where('users', ['group_id' => $id], 1);
@@ -172,6 +197,14 @@ class Settings_model extends CI_Model
     public function deleteBrand($id)
     {
         if ($this->db->delete('brands', ['id' => $id])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function deleteSize($id)
+    {
+        if ($this->db->delete('sizes', ['id' => $id])) {
             return true;
         }
         return false;
@@ -371,6 +404,15 @@ class Settings_model extends CI_Model
     public function getBrandByName($name)
     {
         $q = $this->db->get_where('brands', ['name' => $name], 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return false;
+    }
+
+    public function getSizeByName($name)
+    {
+        $q = $this->db->get_where('sizes', ['name' => $name], 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }
@@ -627,6 +669,14 @@ class Settings_model extends CI_Model
     public function updateBrand($id, $data = [])
     {
         if ($this->db->update('brands', $data, ['id' => $id])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateSize($id, $data = [])
+    {
+        if ($this->db->update('sizes', $data, ['id' => $id])) {
             return true;
         }
         return false;
