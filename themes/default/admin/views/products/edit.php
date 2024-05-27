@@ -125,6 +125,16 @@ if (!empty($variants)) {
                         echo form_dropdown('brand', $br, (isset($_POST['brand']) ? $_POST['brand'] : ($product ? $product->brand : '')), 'class="form-control select" id="brand" placeholder="' . lang('select') . ' ' . lang('brand') . '" style="width:100%"')
                         ?>
                     </div>
+                    <div class="form-group all">
+                        <?= lang('size', 'size') ?>
+                        <?php
+                        $br[''] = '';
+                        foreach ($sizes as $size) {
+                            $br[$size->id] = $size->name;
+                        }
+                        echo form_dropdown('size', $br, (isset($_POST['size']) ? $_POST['size'] : ($product ? $product->size : '')), 'class="form-control select" id="size" placeholder="' . lang('select') . ' ' . lang('size') . '" style="width:100%"')
+                        ?>
+                    </div>
 
                     <div class="form-group all">
                         <?= lang('business_location', 'business_location') ?>
