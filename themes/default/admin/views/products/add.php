@@ -147,7 +147,7 @@ if (!empty($variants)) {
                                 // Set the price if available
                                 $price = isset($product) && isset($product->prices[$location->id]) ? $product->prices[$location->id] : '';
 
-                                echo '<div class="checkbox">';
+                                echo '<div class="form-check form-check-inline">';
                                 echo '<label>';
                                 echo form_checkbox('business_location[]', $location->id, $isChecked, 'class="form-control" id="business_location_' . $location->id . '"');
                                 echo ' ' . $location->name;
