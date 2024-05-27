@@ -388,31 +388,6 @@
                                             <span class="text"> <?= lang('add_product'); ?></span>
                                         </a>
                                     </li>
-                                    <li id="system_settings_categories">
-                                        <a href="<?= admin_url('system_settings/categories') ?>">
-                                            <i class="fa fa-folder-open"></i><span class="text"> <?= lang('categories'); ?></span>
-                                        </a>
-                                    </li>
-                                    <li id="system_settings_units">
-                                        <a href="<?= admin_url('system_settings/units') ?>">
-                                            <i class="fa fa-wrench"></i><span class="text"> <?= lang('units'); ?></span>
-                                        </a>
-                                    </li>
-                                    <li id="system_settings_brands">
-                                        <a href="<?= admin_url('system_settings/brands') ?>">
-                                            <i class="fa fa-th-list"></i><span class="text"> <?= lang('brands'); ?></span>
-                                        </a>
-                                    </li>
-                                    <li id="system_settings_sizes">
-                                        <a href="<?= admin_url('system_settings/sizes') ?>">
-                                            <i class="fa fa-th-list"></i><span class="text"> Ukuran</span>
-                                        </a>
-                                    </li>
-                                    <li id="system_settings_variants">
-                                        <a href="<?= admin_url('system_settings/variants') ?>">
-                                            <i class="fa fa-tags"></i><span class="text"> <?= lang('variants'); ?></span>
-                                        </a>
-                                    </li>
                                     <li id="products_import_csv">
                                         <a class="submenu" href="<?= admin_url('products/import_csv'); ?>">
                                             <i class="fa fa-file-text"></i>
@@ -733,7 +708,32 @@
                                             <a href="<?= admin_url('system_settings/expense_categories') ?>">
                                                 <i class="fa fa-folder-open"></i><span class="text"> <?= lang('expense_categories'); ?></span>
                                             </a>
-                                        </li>                                        
+                                        </li>
+                                        <li id="system_settings_categories">
+                                            <a href="<?= admin_url('system_settings/categories') ?>">
+                                                <i class="fa fa-folder-open"></i><span class="text"> <?= lang('categories'); ?></span>
+                                            </a>
+                                        </li>
+                                        <li id="system_settings_units">
+                                            <a href="<?= admin_url('system_settings/units') ?>">
+                                                <i class="fa fa-wrench"></i><span class="text"> <?= lang('units'); ?></span>
+                                            </a>
+                                        </li>
+                                        <li id="system_settings_brands">
+                                            <a href="<?= admin_url('system_settings/brands') ?>">
+                                                <i class="fa fa-th-list"></i><span class="text"> <?= lang('brands'); ?></span>
+                                            </a>
+                                        </li>
+                                        <li id="system_settings_sizes">
+                                            <a href="<?= admin_url('system_settings/sizes') ?>">
+                                                <i class="fa fa-th-list"></i><span class="text"> Ukuran</span>
+                                            </a>
+                                        </li>
+                                        <li id="system_settings_variants">
+                                            <a href="<?= admin_url('system_settings/variants') ?>">
+                                                <i class="fa fa-tags"></i><span class="text"> <?= lang('variants'); ?></span>
+                                            </a>
+                                        </li>
                                         <li id="system_settings_tax_rates">
                                             <a href="<?= admin_url('system_settings/tax_rates') ?>">
                                                 <i class="fa fa-plus-circle"></i><span class="text"> <?= lang('tax_rates'); ?></span>
