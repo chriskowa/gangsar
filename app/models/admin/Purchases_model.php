@@ -458,6 +458,20 @@ class Purchases_model extends CI_Model
         return false;
     }
 
+    public function getProductToBusinessLocation($id) {
+        $this->db->select("product_to_business_location.*, business_location.name as bl_name")
+            ->join('business_location', 'business_location.id=product_to_business_location.business_location_id', 'left')
+            ->order_by('id', 'asc');
+        $q = $this->db->get_where('product_to_business_location', ['product_id' => $id]);
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
+    }
+
     public function getProductOptionByID($id)
     {
         $q = $this->db->get_where('product_variants', ['id' => $id], 1);

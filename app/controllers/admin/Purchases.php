@@ -1912,15 +1912,18 @@ class Purchases extends MY_Controller
                     }
                 }
 
+                $bl_list = $this->purchases_model->getProductToBusinessLocation($row->id);
+
                 $pr[] = [
-                    'id' => sha1($c . $r),
-                    'item_id' => $row->id,
-                    'label' => $row->name . ' (' . $row->code . ')',
-                    'row'     => $row,
+                    'id'       => sha1($c . $r),
+                    'item_id'  => $row->id,
+                    'label'    => $row->name . ' (' . $row->code . ')',
+                    'row'      => $row,
                     'tax_rate' => $tax_rate,
-                    'units' => $units,
-                    'options' => $options,
-                    'bl_name'  => $row->bl_name
+                    'units'    => $units,
+                    'options'  => $options,
+                    'bl_name'  => $row->bl_name,
+                    'bl_list'  => (!empty($bl_list)) ? $bl_list : []
                 ];
                 $r++;
             }
