@@ -511,8 +511,31 @@
         </button>
         <h4 class="modal-title" id="prModalLabel"></h4>
       </div>
-      <form class="form-horizontal" id="pr_popover_content" role="form">
         <div class="modal-body">
+          <div class="well">
+            <div class="form-group">
+              <label class="col-sm-4 control-label" style="padding-top:0;">Business Location</label>
+              <div class="col-sm-8" style="padding-top:7px">
+                <?php foreach ($business_locations as $index => $business_location) { ?>
+                  <div style="display: flex; align-items: center; margin-bottom: 1rem;" id="pbusinesslocation">
+                    <div style="margin-right: 1rem">
+                      <input type="checkbox" value="<?= $business_location->id; ?>" name="location_id[]" data-index="<?= $index; ?>" data-name="<?= $business_location->name; ?>" />
+                    </div>
+                    <div style="margin-right: 2rem">
+                      <span><?= $business_location->name; ?></span>
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 2rem;">
+                    <input type="text" class="form-control" placeholder="Harga Produk" value="" name="price[]" data-index="<?= $index; ?>" />
+                  </div>
+                <?php } ?>
+              </div>
+            </div>
+            <div class="text-right">
+              <button class="btn btn-success" id="save_business_location"><i class="fa fa-check"></i> Simpan</button>
+            </div>
+          </div>
+        <form class="form-horizontal" id="pr_popover_content" role="form">
           <?php if ($Settings->tax1) { ?>
             <div class="form-group">
               <label class="col-sm-4 control-label"><?= lang('product_tax') ?></label>
@@ -583,7 +606,6 @@
           <div class="panel panel-default">
             <div class="panel-heading"><?= lang('calculate_unit_cost'); ?></div>
             <div class="panel-body">
-
               <div class="form-group">
                 <label for="pcost" class="col-sm-4 control-label"><?= lang('subtotal') ?></label>
                 <div class="col-sm-8">
@@ -597,24 +619,6 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label" style="padding-top:0;">Business Location</label>
-            <div class="col-sm-8" style="padding-top:7px">
-              <?php foreach ($business_locations as $index => $business_location) { ?>
-                <div style="display: flex; align-items: center; margin-bottom: 1rem;" id="pbusinesslocation">
-                  <div style="margin-right: 1rem">
-                    <input type="checkbox" value="<?= $business_location->id; ?>" name="location_id[]" data-index="<?= $index; ?>" />
-                  </div>
-                  <div style="margin-right: 2rem">
-                    <span><?= $business_location->name; ?></span>
-                  </div>
-                </div>
-                <div style="margin-bottom: 2rem;">
-                  <input type="text" class="form-control" placeholder="Harga Produk" value="" name="price[]" data-index="<?= $index; ?>" />
-                </div>
-              <?php } ?>
             </div>
           </div>
           <input type="hidden" id="punit_cost" value="" />

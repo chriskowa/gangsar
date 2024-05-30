@@ -362,19 +362,15 @@ $(document).ready(function () {
         });
 
         $.each(poitems[item_id].bl_list, function(index, bl_item) {
-            // Find the corresponding checkbox element
             var checkbox = $('input[name="location_id[]"][value="' + bl_item.business_location_id + '"]');
-            console.log(checkbox)
             if (checkbox.length) {
-                // Check the checkbox
-                checkbox.attr('checked', 'checked');
+                checkbox.iCheck('check');
             }
-            // Assuming you want to set the price input value as well
             var priceInput = $('input[name="price[]"][data-index="' + index + '"]');
             if (priceInput.length) {
                 priceInput.val(bl_item.price);
             }
-        })
+        });
 
         $('#poptions-div').html(opt);
         $('#punits-div').html(uopt);
@@ -401,6 +397,28 @@ $(document).ready(function () {
             $('#poption').select2('val', product_variant);
             product_variant = 0;
         }
+    });
+
+    $('#save_business_location').on('click', function() {
+        var row       = $('#' + $('#row_id').val());
+        var item_id   = row.attr('data-item-id');
+        var poitems   = JSON.parse(localStorage.getItem('poitems'));
+        var newBlList = [];
+        $('input[name="location_id[]"]:checked').each(function() {
+            var businessLocationId = $(this).val();
+            var priceInput         = $('input[name="price[]"][data-index="' + $(this).data('index') + '"]');
+            var price              = priceInput.val();
+            var locationName       = $(this).data('name');
+            newBlList.push({
+                "id"                  : businessLocationId,
+                "product_id"          : poitems[item_id].item_id,
+                "business_location_id": businessLocationId,
+                "price"               : price,
+                "bl_name"             : locationName
+            });
+        });
+        bl_list = newBlList;
+        console.log(newBlList)
     });
 
     $(document).on('change', '#pcost, #ptax, #pdiscount', function () {
