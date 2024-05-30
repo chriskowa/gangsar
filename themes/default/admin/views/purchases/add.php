@@ -552,24 +552,6 @@
               <div id="poptions-div"></div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-4 control-label">Business Location</label>
-            <div class="col-sm-8" style="padding-top:7px">
-              <?php foreach ($business_locations as $index => $business_location) { ?>
-                <div style="display: flex; align-items: center; margin-bottom: 1rem;" id="pbusinesslocation">
-                  <div style="margin-right: 1rem">
-                    <input type="checkbox" value="<?= $business_location->id; ?>" name="location_id[]" data-index="<?= $index; ?>" />
-                  </div>
-                  <div style="margin-right: 2rem">
-                    <span><?= $business_location->name; ?></span>
-                  </div>
-                  <div>
-                    <input type="text" class="form-control" placeholder="Harga Produk" value="" name="price[]" data-index="<?= $index; ?>" />
-                  </div>
-                </div>
-              <?php } ?>
-            </div>
-          </div>
           <?php if ($Settings->product_discount) { ?>
             <div class="form-group">
               <label for="pdiscount" class="col-sm-4 control-label"><?= lang('product_discount') ?></label>
@@ -615,6 +597,24 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label" style="padding-top:0;">Business Location</label>
+            <div class="col-sm-8" style="padding-top:7px">
+              <?php foreach ($business_locations as $index => $business_location) { ?>
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;" id="pbusinesslocation">
+                  <div style="margin-right: 1rem">
+                    <input type="checkbox" value="<?= $business_location->id; ?>" name="location_id[]" data-index="<?= $index; ?>" />
+                  </div>
+                  <div style="margin-right: 2rem">
+                    <span><?= $business_location->name; ?></span>
+                  </div>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                  <input type="text" class="form-control" placeholder="Harga Produk" value="" name="price[]" data-index="<?= $index; ?>" />
+                </div>
+              <?php } ?>
             </div>
           </div>
           <input type="hidden" id="punit_cost" value="" />

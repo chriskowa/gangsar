@@ -361,6 +361,21 @@ $(document).ready(function () {
             }
         });
 
+        $.each(poitems[item_id].bl_list, function(index, bl_item) {
+            // Find the corresponding checkbox element
+            var checkbox = $('input[name="location_id[]"][value="' + bl_item.business_location_id + '"]');
+            console.log(checkbox)
+            if (checkbox.length) {
+                // Check the checkbox
+                checkbox.attr('checked', 'checked');
+            }
+            // Assuming you want to set the price input value as well
+            var priceInput = $('input[name="price[]"][data-index="' + index + '"]');
+            if (priceInput.length) {
+                priceInput.val(bl_item.price);
+            }
+        })
+
         $('#poptions-div').html(opt);
         $('#punits-div').html(uopt);
         $('select.select').select2({ minimumResultsForSearch: 7 });
@@ -513,7 +528,7 @@ $(document).ready(function () {
                 var index       = $(this).data('index');
                 var price       = $('input[type="text"][name="price[]"][data-index="' + index + '"]').val();
                 business_location.push({
-                    'id': location_id,
+                    'id'   : location_id,
                     'price': price
                 });
             }
