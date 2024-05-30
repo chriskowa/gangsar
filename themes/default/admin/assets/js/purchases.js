@@ -409,13 +409,15 @@ $(document).ready(function () {
             var priceInput         = $('input[name="price[]"][data-index="' + $(this).data('index') + '"]');
             var price              = priceInput.val();
             var locationName       = $(this).data('name');
-            newBlList.push({
-                "id"                  : businessLocationId,
-                "product_id"          : poitems[item_id].item_id,
-                "business_location_id": businessLocationId,
-                "price"               : price,
-                "bl_name"             : locationName
-            });
+            if (priceInput.val().length > 0) {
+                newBlList.push({
+                    "id"                  : businessLocationId,
+                    "product_id"          : poitems[item_id].item_id,
+                    "business_location_id": businessLocationId,
+                    "price"               : price,
+                    "bl_name"             : locationName
+                });
+            }
         });
         bl_list = newBlList;
         console.log(newBlList)
