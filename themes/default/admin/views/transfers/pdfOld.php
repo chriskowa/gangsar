@@ -69,11 +69,20 @@
                     <thead>
                         <tr>
                             <th style="text-align:center; vertical-align:middle;"><?php echo $this->lang->line('no'); ?></th>
-                            <th width="120" style="vertical-align:middle;"><?php echo $this->lang->line('code'); ?></th>
                             <th style="vertical-align:middle;"><?php echo $this->lang->line('description'); ?></th>
-                            <th style="text-align:center; vertical-align:middle;"><?php echo $this->lang->line('size'); ?></th>
+                            <?php if ($Settings->indian_gst) {
+                ?>
+                                <th><?= lang('hsn_code'); ?></th>
+                                <?php
+            } ?>
                             <th style="text-align:center; vertical-align:middle;"><?php echo $this->lang->line('quantity'); ?></th>
-                            
+                            <th style="text-align:center; vertical-align:middle;"><?php echo $this->lang->line('unit_price'); ?></th>
+                            <?php
+                            if ($Settings->tax1) {
+                                echo '<th style="text-align:center; vertical-align:middle;">' . $this->lang->line('tax') . '</th>';
+                            }
+                            ?>
+                            <th style="text-align:center; vertical-align:middle;"><?php echo $this->lang->line('subtotal'); ?></th>
                         </tr>
                     </thead>
 
@@ -84,19 +93,60 @@
                             <tr>
                                 <td style="text-align:center; width:25px;"><?php echo $r; ?></td>
                                 <td style="text-align:left;">
-                                    <?= $row->product_code?>
-                                </td>
-                                <td style="text-align:left;">
-                                    <?= $row->product_name . ($row->variant ? ' (' . $row->variant . ')' : ''); ?>
+                                    <?= $row->product_code . ' - ' . $row->product_name . ($row->variant ? ' (' . $row->variant . ')' : ''); ?>
                                     <?= $row->second_name ? '<br>' . $row->second_name : ''; ?>
                                 </td>
-                                <td style="text-align:center;width:80px; "><?php echo $this->sma->formatNumber($row->product_size)?></td>
+                                <?php if ($Settings->indian_gst) {
+                                ?>
+                                    <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $row->hsn_code; ?></td>
+                                    <?php
+                            } ?>
                                 <td style="text-align:center;width:80px; "><?php echo $this->sma->formatQuantity($row->unit_quantity) . ' ' . $row->product_unit_code; ?></td>
+                                <td style="width:90px;text-align:right;vertical-align:middle;"><?php echo $this->sma->formatMoney($row->net_unit_cost); ?></td>
+                                <?php
+                                if ($Settings->tax1) {
+                                    echo '<td style="width: 80px; text-align:right; vertical-align:middle;">' . ($Settings->indian_gst ? '<small>(' . $row->tax . ')</small>' : '') . ' ' . $this->sma->formatMoney($row->item_tax) . '</td>';
+                                }
+                                ?>
+                                <td style="width:100px;text-align:right;vertical-align:middle;"><?php echo $this->sma->formatMoney($row->subtotal); ?></td>
                             </tr>
                             <?php $r++;
                         endforeach;
                         ?>
                     </tbody>
+                    <tfoot>
+                        <?php $col = $Settings->indian_gst ? 4 : 3;
+                        if ($Settings->tax1) {
+                            $col += 1;
+                        } ?>
+
+                        <tr>
+                            <td colspan="<?= $col; ?>"
+                                style="text-align:right;"><?= lang('total'); ?>
+                                (<?= $default_currency->code; ?>)
+                            </td>
+                            <td style="text-align:right;"><?= $this->sma->formatMoney($transfer->total_tax); ?></td>
+                            <td style="text-align:right;"><?= $this->sma->formatMoney($transfer->total + $transfer->total_tax); ?></td>
+                        </tr>
+                        <?php if ($Settings->indian_gst) {
+                            if ($transfer->cgst > 0) {
+                                echo '<tr><td colspan="' . ($col + 1) . '" class="text-right">' . lang('cgst') . ' (' . $default_currency->code . ')</td><td class="text-right">' . ($Settings->format_gst ? $this->sma->formatMoney($transfer->cgst) : $transfer->cgst) . '</td></tr>';
+                            }
+                            if ($transfer->sgst > 0) {
+                                echo '<tr><td colspan="' . ($col + 1) . '" class="text-right">' . lang('sgst') . ' (' . $default_currency->code . ')</td><td class="text-right">' . ($Settings->format_gst ? $this->sma->formatMoney($transfer->sgst) : $transfer->sgst) . '</td></tr>';
+                            }
+                            if ($transfer->igst > 0) {
+                                echo '<tr><td colspan="' . ($col + 1) . '" class="text-right">' . lang('igst') . ' (' . $default_currency->code . ')</td><td class="text-right">' . ($Settings->format_gst ? $this->sma->formatMoney($transfer->igst) : $transfer->igst) . '</td></tr>';
+                            }
+                        } ?>
+                        <tr>
+                            <td colspan="<?= $col + 1; ?>"
+                                style="text-align:right; font-weight:bold;"><?= lang('total_amount'); ?>
+                                (<?= $default_currency->code; ?>)
+                            </td>
+                            <td style="text-align:right; font-weight:bold;"><?= $this->sma->formatMoney($transfer->grand_total); ?></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

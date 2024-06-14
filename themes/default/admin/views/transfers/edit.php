@@ -273,23 +273,23 @@
                                            class="table items table-striped table-bordered table-condensed table-hover sortable_table">
                                         <thead>
                                         <tr>
-                                            <th class="col-md-4"><?= lang('product') . ' (' . lang('code') . ' - ' . lang('name') . ')'; ?></th>
-                                            <th class="col-md-1"><?= lang('net_unit_cost'); ?></th>
-                                            <th class="col-md-1"><?= lang('quantity'); ?></th>
+                                            <th class="col-md-8"><?= lang('product') . ' (' . lang('code') . ' - ' . lang('name') . ')'; ?></th>
+                                            <th class="col-md-1 hidden"><?= lang('net_unit_cost'); ?></th>
+                                            <th class="col-md-2"><?= lang('quantity'); ?></th>
                                             <?php
                                             if ($Settings->product_expiry) {
-                                                echo '<th class="col-md-2">' . $this->lang->line('expiry_date') . '</th>';
+                                                echo '<th class="col-md-2 hidden">' . $this->lang->line('expiry_date') . '</th>';
                                             }
                                             ?>
                                             <?php
                                             if ($Settings->tax1) {
-                                                echo '<th class="col-md-1">' . $this->lang->line('product_tax') . '</th>';
+                                                echo '<th class="col-md-1 hidden">' . $this->lang->line('product_tax') . '</th>';
                                             }
                                             ?>
-                                            <th><?= lang('subtotal'); ?> (<span
+                                            <th class="hidden"><?= lang('subtotal'); ?> (<span
                                                     class="currency"><?= $default_currency->code ?></span>)
                                             </th>
-                                            <th style="width: 30px !important; text-align: center;"><i
+                                            <th class="col-md-2" style="width: 30px !important; text-align: center;"><i
                                                     class="fa fa-trash-o"
                                                     style="opacity:0.5; filter:alpha(opacity=50);"></i></th>
                                         </tr>
@@ -317,13 +317,13 @@
                     <table class="table table-bordered table-condensed totals" style="margin-bottom:0;">
                         <tr class="warning">
                             <td><?= lang('items') ?> <span class="totals_val pull-right" id="titems">0</span></td>
-                            <td><?= lang('total') ?> <span class="totals_val pull-right" id="total">0.00</span></td>
+                            <td class="hidden"><?= lang('total') ?> <span class="totals_val pull-right" id="total">0.00</span></td>
                             <?php if ($Settings->tax1) {
                                                 ?>
-                                <td><?= lang('product_tax') ?> <span class="totals_val pull-right" id="ttax1">0.00</span></td>
+                                <td class="hidden"><?= lang('product_tax') ?> <span class="totals_val pull-right" id="ttax1">0.00</span></td>
                             <?php
                                             } ?>
-                            <td><?= lang('grand_total') ?> <span class="totals_val pull-right" id="gtotal">0.00</span>
+                            <td class="hidden"><?= lang('grand_total') ?> <span class="totals_val pull-right" id="gtotal">0.00</span>
                             </td>
                         </tr>
                     </table>
@@ -366,7 +366,7 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hidden">
                         <label for="pprice" class="col-sm-4 control-label"><?= lang('cost') ?></label>
 
                         <div class="col-sm-8">

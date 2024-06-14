@@ -122,3 +122,70 @@ if (!function_exists('word_wrap')) {
         return $output;
     }
 }
+
+function get_hari_all(){
+    return array(
+        '1'=>'Senin',
+        '2'=>'Selasa',
+        '3'=>'Rabu',
+        '4'=>'Kamis',
+        '5'=>"Jum'at",
+        '6'=>'Sabtu',
+        '7'=>'Minggu'
+        );
+}
+
+function get_bulan_all($getBulan=null){
+    $bulan=array(
+        '01'=>'Januari',
+        '02'=>'Februari',
+        '03'=>'Maret',
+        '04'=>'April',
+        '05'=>'Mei',
+        '06'=>'Juni',
+        '07'=>'Juli',
+        '08'=>'Agustus',
+        '09'=>'September',
+        '10'=>'Oktober',
+        '11'=>'November',
+        '12'=>'Desember'
+    );
+    if($getBulan == null)
+        return $bulan;
+    else{
+        $i = $getBulan;
+        if($getBulan < 10) $i = $getBulan;
+        return $bulan[$i];
+    }
+}
+
+function dateToIndo($date="",$day=false,$time=false){
+
+    $bulan=get_bulan_all();
+    $hari=get_hari_all();
+    $d=date('d',  strtotime($date));
+    $m=date('m',  strtotime($date));
+    $y=date('Y',  strtotime($date));
+    $n=date('N',  strtotime($date));
+    $t=date('H:i', strtotime($date));
+    if($day)
+        $date = $hari[$n].", ".$d." ".$bulan[$m]." ".$y." ";
+    else
+        $date = $d." ".$bulan[$m]." ".$y." ";
+        
+    if($time)
+        $date .= $t;
+        
+    return $date;
+}
+
+function numIndo($num,$precision=2,$decimal='.',$thousand=','){
+  if (is_null($num)) {
+    return 0;
+  }
+  if($num===''){
+   return null;
+  }
+  $num = (float) $num;
+  return number_format($num,$precision,$decimal,$thousand);
+}

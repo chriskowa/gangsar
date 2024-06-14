@@ -283,23 +283,23 @@ var userGroup = '<?php echo $userGroupName;?>';
                                            class="table items table-striped table-bordered table-condensed table-hover sortable_table">
                                         <thead>
                                         <tr>
-                                            <th class="col-md-4"><?= lang('product') . ' (' . lang('code') . ' - ' . lang('name') . ')'; ?></th>
+                                            <th><?= lang('product') . ' (' . lang('code') . ' - ' . lang('name') . ')'; ?></th>
                                             <?php
                                             if ($Settings->product_expiry) {
-                                                echo '<th class="col-md-2">' . $this->lang->line('expiry_date') . '</th>';
+                                                echo '<th class="col-md-2 hidden">' . $this->lang->line('expiry_date') . '</th>';
                                             }
                                             ?>
-                                            <th class="col-md-1"><?= lang('net_unit_cost'); ?></th>
+                                            <th class="col-md-1 hidden"><?= lang('net_unit_cost'); ?></th>
                                             <th class="col-md-1"><?= lang('quantity'); ?></th>
                                             <?php
                                             if ($Settings->tax1) {
-                                                echo '<th class="col-md-1">' . $this->lang->line('product_tax') . '</th>';
+                                                echo '<th class="col-md-1 hidden">' . $this->lang->line('product_tax') . '</th>';
                                             }
                                             ?>
-                                            <th><?= lang('subtotal'); ?> (<span
+                                            <th class="hidden"><?= lang('subtotal'); ?> (<span
                                                     class="currency"><?= $default_currency->code ?></span>)
                                             </th>
-                                            <th style="width: 30px !important; text-align: center;"><i
+                                            <th class="col-md-1 text-center"><i
                                                     class="fa fa-trash-o"
                                                     style="opacity:0.5; filter:alpha(opacity=50);"></i></th>
                                         </tr>
@@ -326,7 +326,7 @@ var userGroup = '<?php echo $userGroupName;?>';
                     </div>
                 </div>
 
-                <div id="bottom-total" class="well well-sm" style="margin-bottom: 0;">
+                <div id="bottom-total" class="well well-sm hidden" style="margin-bottom: 0;">
                     <table class="table table-bordered table-condensed totals" style="margin-bottom:0;">
                         <tr class="warning">
                             <td><?= lang('items') ?> <span class="totals_val pull-right" id="titems">0</span></td>

@@ -455,7 +455,7 @@ function loadItems() {
                 '" title="Edit" style="cursor:pointer;"></i></td>';
             if (site.settings.product_expiry == 1) {
                 tr_html +=
-                    '<td><input class="form-control date rexpiry" name="expiry[]" type="text" value="' +
+                    '<td class="hidden"><input class="form-control date rexpiry" name="expiry[]" type="text" value="' +
                     item_expiry +
                     '" data-id="' +
                     row_no +
@@ -466,7 +466,7 @@ function loadItems() {
                     '"></td>';
             }            
             tr_html +=
-                '<td class="text-right"><input class="form-control input-sm text-right rcost" name="net_cost[]" type="hidden" id="cost_' +
+                '<td class="text-right hidden"><input class="form-control input-sm text-right rcost" name="net_cost[]" type="hidden" id="cost_' +
                 row_no +
                 '" value="' +
                 formatDecimal(item_cost) +
@@ -501,7 +501,7 @@ function loadItems() {
                 '"></td>';
             if (site.settings.tax1 == 1) {
                 tr_html +=
-                    '<td class="text-right"><input class="form-control input-sm text-right rproduct_tax" name="product_tax[]" type="hidden" id="product_tax_' +
+                    '<td class="text-right hidden"><input class="form-control input-sm text-right rproduct_tax" name="product_tax[]" type="hidden" id="product_tax_' +
                     row_no +
                     '" value="' +
                     pr_tax.id +
@@ -514,7 +514,7 @@ function loadItems() {
                     '</span></td>';
             }
             tr_html +=
-                '<td class="text-right"><span class="text-right ssubtotal" id="subtotal_' +
+                '<td class="text-right hidden"><span class="text-right ssubtotal" id="subtotal_' +
                 row_no +
                 '">' +
                 formatMoney((parseFloat(item_cost) - item_discount + parseFloat(pr_tax_val)) * parseFloat(item_qty)) +
@@ -547,7 +547,7 @@ function loadItems() {
             col++;
         }
         var tfoot =
-            '<tr id="tfoot" class="tfoot active"><th colspan="' +
+            '<tr id="tfoot" class="tfoot active hidden"><th colspan="' +
             col +
             '">Total</th><th class="text-center">' +
             formatQty(parseFloat(count) - 1) +
@@ -574,11 +574,11 @@ function loadItems() {
             $(window).scrollTop($(window).scrollTop() + 1);
         }
 
-        if(userGroup == 'gudang'){
-            $('.totaltransfer').hide();
-            $('.scost').hide();
-            $('.ssubtotal').hide();
-        }
+        // if(userGroup == 'gudang'){
+        //     $('.totaltransfer').hide();
+        //     $('.scost').hide();
+        //     $('.ssubtotal').hide();
+        // }
 
         set_page_focus();
     }

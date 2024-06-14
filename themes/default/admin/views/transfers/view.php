@@ -53,15 +53,16 @@
                             <th style="vertical-align:middle;"><?= lang('description'); ?></th>
                             <?php if ($Settings->indian_gst) {
                         ?>
-                                <th><?= lang('hsn_code'); ?></th>
+                                <!-- <th><?= lang('hsn_code'); ?></th> -->
                             <?php
                     } ?>
+                            <th style="text-align:center; vertical-align:middle;"><?= lang('size'); ?></th>
                             <th style="text-align:center; vertical-align:middle;"><?= lang('quantity'); ?></th>
-                            <th style="text-align:center; vertical-align:middle;"><?= lang('unit_cost'); ?></th>
+                            <!-- <th style="text-align:center; vertical-align:middle;"><?= lang('unit_cost'); ?></th> -->
                             <?php if ($Settings->tax1) {
-                        echo '<th style="text-align:center; vertical-align:middle;">' . lang('tax') . '</th>';
+                        // echo '<th style="text-align:center; vertical-align:middle;">' . lang('tax') . '</th>';
                     } ?>
-                            <th style="text-align:center; vertical-align:middle;"><?= lang('subtotal'); ?></th>
+                            <!-- <th style="text-align:center; vertical-align:middle;"><?= lang('subtotal'); ?></th> -->
                         </tr>
                     </thead>
 
@@ -76,20 +77,21 @@
                             </td>
                             <?php if ($Settings->indian_gst) {
                             ?>
-                            <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $row->hsn_code; ?></td>
+                            <!-- <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $row->hsn_code; ?></td> -->
                             <?php
                         } ?>
+                            <td style="text-align:center; width:80px; "><?= $row->product_size ?></td>
                             <td style="text-align:center; width:80px; "><?= $this->sma->formatQuantity($row->unit_quantity) . ' ' . $row->product_unit_code; ?></td>
-                            <td style="width: 100px; text-align:right; vertical-align:middle;"><?= $this->sma->formatMoney($row->net_unit_cost); ?></td>
+                            <!-- <td style="width: 100px; text-align:right; vertical-align:middle;"><?= $this->sma->formatMoney($row->net_unit_cost); ?></td> -->
                             <?php if ($Settings->tax1) {
-                            echo '<td style="width: 80px; text-align:right; vertical-align:middle;">' . ($Settings->indian_gst ? '<small>(' . $row->tax . ')</small>' : '') . ' ' . $this->sma->formatMoney($row->item_tax) . '</td>';
+                            // echo '<td style="width: 80px; text-align:right; vertical-align:middle;">' . ($Settings->indian_gst ? '<small>(' . $row->tax . ')</small>' : '') . ' ' . $this->sma->formatMoney($row->item_tax) . '</td>';
                         } ?>
-                            <td style="width:100px; text-align:right; vertical-align:middle;"><?= $this->sma->formatMoney($row->subtotal); ?></td>
+                            <!-- <td style="width:100px; text-align:right; vertical-align:middle;"><?= $this->sma->formatMoney($row->subtotal); ?></td> -->
                         </tr>
                         <?php $r++;
                         endforeach; ?>
                     </tbody>
-                    <tfoot>
+                    <tfoot style="display: none;">
                         <?php $col = $Settings->indian_gst ? 4 : 3;
                         if ($Settings->tax1) {
                             $col += 1;

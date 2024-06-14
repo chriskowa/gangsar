@@ -592,7 +592,7 @@ class Transfers extends MY_Controller
         $this->load->library('datatables');
 
         $this->datatables
-            ->select('id, date, transfer_no, from_warehouse_name as fname, from_warehouse_code as fcode, to_warehouse_name as tname,to_warehouse_code as tcode, total, total_tax, grand_total, status, attachment')
+            ->select('id, date, transfer_no, from_warehouse_name as fname, from_warehouse_code as fcode, to_warehouse_name as tname,to_warehouse_code as tcode, status, attachment')
             ->from('transfers')
             ->edit_column('fname', '$1 ($2)', 'fname, fcode')
             ->edit_column('tname', '$1 ($2)', 'tname, tcode');
@@ -858,21 +858,27 @@ class Transfers extends MY_Controller
                 }
                 $titles = array_shift($arrResult);
 
-                $keys  = ['product', 'unit_cost', 'quantity', 'variant', 'expiry'];
+                $keys  = ['product', 'quantity', 'variant', 'expiry'];
                 $final = [];
                 foreach ($arrResult as $key => $value) {
                     $final[] = array_combine($keys, $value);
                 }
 
                 $rw = 2;
+                echo "<pre>";
+                print_r($arrResult);
+                print_r($titles);
+                print_r($keys);
+                print_r($final);
+                // exit;
                 foreach ($final as $csv_pr) {
                     $item_code     = $csv_pr['product'];
-                    $unit_cost     = $csv_pr['unit_cost'];
+                    // $unit_cost     = $csv_pr['unit_cost'];
                     $item_quantity = $csv_pr['quantity'];
                     $variant       = $csv_pr['variant'] ?? null;
                     $item_expiry   = isset($csv_pr['expiry']) ? $this->sma->fsd($csv_pr['expiry']) : null;
 
-                    if (isset($item_code) && isset($unit_cost) && isset($item_quantity)) {
+                    if (isset($item_code) && isset($item_quantity)) {
                         if (!($product_details = $this->transfers_model->getProductByCode($item_code))) {
                             $this->session->set_flashdata('error', lang('pr_not_found') . ' ( ' . $csv_pr['product'] . ' ). ' . lang('line_no') . ' ' . $rw);
                             redirect($_SERVER['HTTP_REFERER']);
@@ -898,25 +904,26 @@ class Transfers extends MY_Controller
 
                         $pr_item_tax   = $item_tax   = 0;
                         $tax           = '';
-                        $item_net_cost = $unit_cost;
-                        if (isset($product_details->tax_rate) && $product_details->tax_rate != 0) {
-                            $tax_details = $this->site->getTaxRateByID($product_details->tax_rate);
-                            $ctax        = $this->site->calculateTax($product_details, $tax_details, $unit_cost);
-                            $item_tax    = $ctax['amount'];
-                            $tax         = $ctax['tax'];
-                            if (!empty($product_details) && $product_details->tax_method != 1) {
-                                $item_net_cost = $unit_cost - $item_tax;
-                            }
-                            $pr_item_tax = $this->sma->formatDecimal(($item_tax * $item_quantity), 4);
-                            if ($this->Settings->indian_gst && $gst_data = $this->gst->calculateIndianGST($pr_item_tax, false, $tax_details)) {
-                                $total_cgst += $gst_data['cgst'];
-                                $total_sgst += $gst_data['sgst'];
-                                $total_igst += $gst_data['igst'];
-                            }
-                        }
+                        // $item_net_cost = $unit_cost;
+                        $item_net_cost = 0;
+                        // if (isset($product_details->tax_rate) && $product_details->tax_rate != 0) {
+                        //     $tax_details = $this->site->getTaxRateByID($product_details->tax_rate);
+                        //     $ctax        = $this->site->calculateTax($product_details, $tax_details, $unit_cost);
+                        //     $item_tax    = $ctax['amount'];
+                        //     $tax         = $ctax['tax'];
+                        //     if (!empty($product_details) && $product_details->tax_method != 1) {
+                        //         $item_net_cost = $unit_cost - $item_tax;
+                        //     }
+                        //     $pr_item_tax = $this->sma->formatDecimal(($item_tax * $item_quantity), 4);
+                        //     if ($this->Settings->indian_gst && $gst_data = $this->gst->calculateIndianGST($pr_item_tax, false, $tax_details)) {
+                        //         $total_cgst += $gst_data['cgst'];
+                        //         $total_sgst += $gst_data['sgst'];
+                        //         $total_igst += $gst_data['igst'];
+                        //     }
+                        // }
 
-                        $product_tax += $pr_item_tax;
-                        $subtotal = $this->sma->formatDecimal((($item_net_cost * $item_quantity) + $pr_item_tax), 4);
+                        // $product_tax += $pr_item_tax;
+                        // $subtotal = $this->sma->formatDecimal((($item_net_cost * $item_quantity) + $pr_item_tax), 4);
                         $unit     = $this->site->getUnitByID($product_details->unit);
 
                         $product = [
@@ -925,7 +932,8 @@ class Transfers extends MY_Controller
                             'product_name'      => $product_details->name,
                             'option_id'         => $item_option->id,
                             'net_unit_cost'     => $item_net_cost,
-                            'unit_cost'         => $this->sma->formatDecimal($unit_cost, 4),
+                            // 'unit_cost'         => $this->sma->formatDecimal($unit_cost, 4),
+                            'unit_cost'         => 0,
                             'quantity'          => $item_quantity,
                             'product_unit_id'   => $unit ? $unit->id : null,
                             'product_unit_code' => $unit ? $unit->code : null,
@@ -935,14 +943,16 @@ class Transfers extends MY_Controller
                             'item_tax'          => $pr_item_tax,
                             'tax_rate_id'       => $product_details->tax_rate,
                             'tax'               => $tax,
-                            'subtotal'          => $subtotal,
+                            // 'subtotal'          => $subtotal,
+                            'subtotal'          => 0,
                             'expiry'            => $item_expiry,
-                            'real_unit_cost'    => $unit_cost,
+                            // 'real_unit_cost'    => $unit_cost,
+                            'real_unit_cost'    => 0,
                             'date'              => date('Y-m-d', strtotime($date)),
                         ];
 
                         $products[] = ($product + $gst_data);
-                        $total += $this->sma->formatDecimal(($item_net_cost * $item_quantity), 4);
+                        // $total += $this->sma->formatDecimal(($item_net_cost * $item_quantity), 4);
                     }
                     $rw++;
                 }
