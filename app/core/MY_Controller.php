@@ -65,12 +65,12 @@ class MY_Controller extends CI_Controller
                 ];
             }
             if (file_exists(APPPATH . 'controllers' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'Pos.php')) {
-                define('POS', 1);
+                define('POS', 0);
             } else {
                 define('POS', 0);
             }
             if (file_exists(APPPATH . 'controllers' . DIRECTORY_SEPARATOR . 'shop' . DIRECTORY_SEPARATOR . 'Shop.php')) {
-                define('SHOP', 1);
+                define('SHOP', 0);
             } else {
                 define('SHOP', 0);
             }
