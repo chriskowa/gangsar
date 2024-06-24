@@ -342,7 +342,7 @@ class Site extends CI_Model
             }
             return $data;
         }
-        return false;
+        return [];
     }
 
     public function getAllBrands()
@@ -354,7 +354,7 @@ class Site extends CI_Model
             }
             return $data;
         }
-        return false;
+        return [];
     }
 
     public function getAllSizes()
@@ -366,7 +366,7 @@ class Site extends CI_Model
             }
             return $data;
         }
-        return false;
+        return [];
     }
 
     public function getAllCategories()

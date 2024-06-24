@@ -1,7 +1,7 @@
 <?php
 
 defined('BASEPATH') or exit('No direct script access allowed');
-
+#[\AllowDynamicProperties]
 class Auth_model extends CI_Model
 {
     public $_cache_user_in_group = [];
