@@ -2518,4 +2518,37 @@ class Products extends MY_Controller
         $this->data['adjustment'] = $this->products_model->getAdjustmentByCountID($id);
         $this->load->view($this->theme . 'products/view_count', $this->data);
     }
+
+    public function rekapstock($view = null)
+    {
+        $this->load->helper('pos');
+        $this->sma->checkPermissions('index');
+
+        $rows = $this->db->query("SELECT product_id, 
+        sma_products.size product_size,
+        sma_products.name product_name,
+        sma_products.code product_code,
+        sum(WHI) as WHI, 
+        sum(WHII) as WHII,
+        sum(TR) as TR,
+        sum(UTM) as UTM,
+        sum(RSK) as RSK,
+        sum(KCF) as KCF
+        from v_sma_warehouse_extended
+        join sma_products on sma_products.id = v_sma_warehouse_extended.product_id
+        group by product_id");
+
+        $this->data['rows'] = $rows->result();
+        $this->data['warehouse'] = $this->db->get('sma_warehouses')->result();
+        
+        if ($view) {
+            $this->load->view($this->theme . 'products/rekapstock', $this->data);
+        } else {
+            $html = $this->load->view($this->theme . 'products/rekapstock', $this->data, true);
+            if (!$this->Settings->barcode_img) {
+                $html = preg_replace("'\<\?xml(.*)\?\>'", '', $html);
+            }
+            $this->sma->generate_pdf($html, $name);
+        }
+    }
 }

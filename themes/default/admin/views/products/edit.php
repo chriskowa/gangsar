@@ -127,13 +127,12 @@ if (!empty($variants)) {
                     </div>
                     <div class="form-group all">
                         <?= lang('size', 'size') ?>
-                        <?php
-                        $br[''] = '';
-                        foreach ($sizes as $size) {
-                            $br[$size->id] = $size->name;
-                        }
-                        echo form_dropdown('size', $br, (isset($_POST['size']) ? $_POST['size'] : ($product ? $product->size : '')), 'class="form-control select" id="size" placeholder="' . lang('select') . ' ' . lang('size') . '" style="width:100%"')
-                        ?>
+                        <input class="form-control" name="size" value="<?= (isset($_POST['size']) ? $_POST['size'] : ($product ? $product->size : '')) ?>">
+                    </div>
+                    
+                    <div class="form-group all">
+                        <?= lang('Grade', 'Kelas Barang') ?>
+                        <?= form_input('cf6', (isset($_POST['cf6']) ? $_POST['cf6'] : ($product ? $product->cf6 : '')), 'class="form-control tip" id="cf6"') ?>
                     </div>
 
                     <div class="form-group all">
@@ -548,14 +547,6 @@ if (!empty($variants)) {
                                 <?= form_input('cf5', (isset($_POST['cf5']) ? $_POST['cf5'] : ($product ? $product->cf5 : '')), 'class="form-control tip" id="cf5"') ?>
                             </div>
                         </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group all">
-                                <?= lang('pcf6', 'cf6') ?>
-                                <?= form_input('cf6', (isset($_POST['cf6']) ? $_POST['cf6'] : ($product ? $product->cf6 : '')), 'class="form-control tip" id="cf6"') ?>
-                            </div>
-                        </div>
-
 
                     </div>
 
