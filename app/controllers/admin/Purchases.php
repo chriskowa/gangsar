@@ -44,6 +44,8 @@ class Purchases extends MY_Controller
 
         $this->session->unset_userdata('csrf_token');
         if ($this->form_validation->run() == true) {
+            // print_r($this->input->post());
+            // exit;
             $reference = $this->input->post('reference_no') ? $this->input->post('reference_no') : $this->site->getReference('po');
             if ($this->Owner || $this->Admin) {
                 $date = $this->sma->fld(trim($this->input->post('date')));
@@ -79,6 +81,8 @@ class Purchases extends MY_Controller
                 $supplier_part_no   = (isset($_POST['part_no'][$r]) && !empty($_POST['part_no'][$r])) ? $_POST['part_no'][$r] : null;
                 $item_unit          = $_POST['product_unit'][$r];
                 $item_quantity      = $_POST['product_base_quantity'][$r];
+                $business_location  = $_POST['business_location_unit'][$r];
+                $size  = $_POST['size_input'][$r];
 
                 if (isset($item_code) && isset($real_unit_cost) && isset($unit_cost) && isset($item_quantity)) {
                     $product_details = $this->purchases_model->getProductByCode($item_code);
@@ -143,7 +147,9 @@ class Purchases extends MY_Controller
                         'date'              => date('Y-m-d', strtotime($date)),
                         'status'            => $status,
                         'supplier_part_no'  => $supplier_part_no,
-                        'business_location' => $item_bl,
+                        // 'business_location' => $item_bl,
+                        'business_location' => $business_location,
+                        'size' => $size,
                     ];
 
                     if ($unit->id != $product_details->unit) {
@@ -578,6 +584,8 @@ class Purchases extends MY_Controller
                 $ordered_quantity   = $_POST['ordered_quantity'][$r];
                 $item_unit          = $_POST['product_unit'][$r];
                 $item_quantity      = $_POST['product_base_quantity'][$r];
+                $business_location  = $_POST['business_location_unit'][$r];
+                $size  = $_POST['size_input'][$r];
 
                 if ($status == 'received' || $status == 'partial') {
                     if ($quantity_received < $item_quantity) {
@@ -647,6 +655,8 @@ class Purchases extends MY_Controller
                         'real_unit_cost'    => $real_unit_cost,
                         'supplier_part_no'  => $supplier_part_no,
                         'date'              => date('Y-m-d', strtotime($date)),
+                        'business_location'  => $business_location,
+                        'size'  => $size,
                     ];
 
                     if ($unit->id != $product_details->unit) {
@@ -734,6 +744,8 @@ class Purchases extends MY_Controller
                     $this->session->set_flashdata('error', lang('product_deleted_x_edit'));
                     redirect($_SERVER['HTTP_REFERER']);
                 }
+                $row->business_location = explode(',', $item->business_location);
+                $row->size = $item->size;
                 $row->expiry           = (($item->expiry && $item->expiry != '0000-00-00') ? $this->sma->hrsd($item->expiry) : '');
                 $row->base_quantity    = $item->quantity;
                 $row->base_unit        = $row->unit ? $row->unit : $item->product_unit_id;
@@ -774,6 +786,7 @@ class Purchases extends MY_Controller
             $this->data['csrf'] = $this->session->userdata('user_csrf');
             $bc                 = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('purchases'), 'page' => lang('purchases')], ['link' => '#', 'page' => lang('edit_purchase')]];
             $meta               = ['page_title' => lang('edit_purchase'), 'bc' => $bc];
+            $this->data['business_locations'] = $this->site->getAllBusiness_location();
             $this->page_construct('purchases/edit', $meta, $this->data);
         }
     }
@@ -1309,6 +1322,7 @@ class Purchases extends MY_Controller
 
     public function pdf($purchase_id = null, $view = null, $save_bufffer = null)
     {
+        $this->load->helper('pos');
         $this->sma->checkPermissions();
 
         if ($this->input->get('id')) {
@@ -1327,6 +1341,7 @@ class Purchases extends MY_Controller
         $this->data['inv']             = $inv;
         $this->data['return_purchase'] = $inv->return_id ? $this->purchases_model->getPurchaseByID($inv->return_id) : null;
         $this->data['return_rows']     = $inv->return_id ? $this->purchases_model->getAllPurchaseItems($inv->return_id) : null;
+        $this->data['ttd']             = $this->ttdPuchase();
         $name                          = $this->lang->line('purchase') . '_' . str_replace('/', '_', $inv->reference_no) . '.pdf';
         $html                          = $this->load->view($this->theme . 'purchases/pdf', $this->data, true);
         if (!$this->Settings->barcode_img) {
@@ -1339,6 +1354,22 @@ class Purchases extends MY_Controller
             return $this->sma->generate_pdf($html, $name, $save_bufffer);
         }
         $this->sma->generate_pdf($html, $name);
+    }
+
+    public function ttdPuchase()
+    {
+        $rs = $this->db->select('sma_users.*, sma_groups.name group_name')
+        ->from('sma_users')
+        ->join('sma_groups', 'sma_groups.id = sma_users.group_id')
+        ->where_in('sma_groups.name', ['owner', 'gudang', 'pajak'])
+        ->get();
+
+        $result = [];
+        foreach($rs->result() as $rs){
+            $result[$rs->group_name] = $rs; 
+        }
+        return $result;
+
     }
 
     /* -------------------------------------------------------------------------------- */

@@ -151,6 +151,7 @@
                         <tr>
                             <th><?= lang('no.'); ?></th>
                             <th><?= lang('description'); ?></th>
+                            <th><?= lang('size'); ?></th>
                             <?php if ($Settings->indian_gst) {
                                 ?>
                                 <th><?= lang('hsn_sac_code'); ?></th>
@@ -186,6 +187,9 @@
                                     <?= $row->supplier_part_no ? '<br>' . lang('supplier_part_no') . ': ' . $row->supplier_part_no : ''; ?>
                                     <?= $row->details ? '<br>' . $row->details : ''; ?>
                                     <?= ($row->expiry && $row->expiry != '0000-00-00') ? '<br>' . lang('expiry') . ': ' . $this->sma->hrsd($row->expiry) : ''; ?>
+                                </td>
+                                <td class="text-center">
+                                    <?= $row->size ?>
                                 </td>
                                 <?php if ($Settings->indian_gst) {
                                 ?>
@@ -228,6 +232,9 @@
                                         <?= $row->details ? '<br>' . $row->details : ''; ?>
                                         <?= ($row->expiry && $row->expiry != '0000-00-00') ? '<br>' . lang('expiry') . ': ' . $this->sma->hrsd($row->expiry) : ''; ?>
                                     </td>
+                                    <td class="text-center">
+                                    <?= $row->size ?>
+                                </td>
                                     <?php if ($Settings->indian_gst) {
                                 ?>
                                     <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $row->hsn_code ?: ''; ?></td>
@@ -275,7 +282,11 @@
                         } else {
                             $tcol = $col;
                         }
+
+                        $tcol = $tcol+1;
+                        $col = $col+1;
                         ?>
+
                         <?php if ($inv->grand_total != $inv->total) {
                             ?>
                             <tr>

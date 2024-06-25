@@ -340,63 +340,67 @@
             </div>
             <div class="clearfix"></div>
 
-            <div class="well well-sm">
-                <div class="row bold">
-                    <div class="col-xs-10">
-                        <?php if ($inv->note || $inv->note != '') {
+            <div class="row">
+                <div class="col-xs-12 pull-left">
+                    <?php if ($inv->note || $inv->note != '') {
                         ?>
+                        <div class="well well-sm">
                             <p class="bold"><?=lang('note'); ?>:</p>
 
                             <div><?=$this->sma->decode_html($inv->note); ?></div>
-                        
+                        </div>
                     <?php
                     }
                     ?>
-                    </div>
-                    <div class="clearfix"></div>
                 </div>
-                <div class="clearfix"></div>
             </div>
-            <div class="table-responsive">
-                <table style="width:100%" cellpadding="2" cellspacing="2">
-                        <tr>
-                            <td colspan="3"></td>
-                            <td align="center"><?= dateToIndo($inv->date, true) ?></td>
-                        </tr>
-                        <tr>
-                            <td align="center">Dibuat Oleh</td>
-                            <td align="center" colspan="2">Checker</td>
-                            <td align="center">Mengetahui,</td>
-                        </tr>
-                        <tr>
-                            <td align="center" width="25%" style="padding: 10px;">
-                                <br>
-                                <br>
-                                <!-- <hr> -->
-                            </td>
-                            <td align="center" width="25%" style="padding: 10px;">
-                                <br>
-                                <br>
-                                <!-- <hr> -->
-                            </td>
-                            <td align="center" width="25%" style="padding: 10px;">
-                                <br>
-                                <br>
-                                <!-- <hr> -->
-                            </td>
-                            <td align="center" width="25%" style="padding: 10px;">
-                                <br>
-                                <br>
-                                <!-- <hr> -->
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center">(<?=$created_by->first_name . ' ' . $created_by->last_name;?>)</td>
-                            <td align="center">(<?= $ttd['gudang']->first_name.' '.$ttd['gudang']->last_name ?>)</td>
-                            <td align="center">(<?= $ttd['pajak']->first_name.' '.$ttd['pajak']->last_name ?>)</td>
-                            <td align="center">(<?= $ttd['owner']->first_name.' '.$ttd['owner']->last_name ?>)</td>
-                        </tr>
-                    </table>
+            <div class="row">
+                <div class="col-xs-3 text-center">
+                    <p>Dibuat Oleh</p>
+                </div>
+                <div class="col-xs-6 text-center">
+                    <p>Checker</p>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <p><?= date("D, d-M-Y") ?><br>Mengetahui,</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 text-center">
+                    
+
+                    <p>&nbsp;</p>
+
+                    <p>&nbsp;</p>
+                    <hr>
+                    <p>(<?=$created_by->first_name . ' ' . $created_by->last_name;?>) </p>
+                </div>
+                <div class="col-xs-3 text-center">
+                    
+
+                    <p>&nbsp;</p>
+
+                    <p>&nbsp;</p>
+                    <hr>
+                    <p>(Angga)</p>
+                </div>
+                <div class="col-xs-3 text-center">
+                    
+
+                    <p>&nbsp;</p>
+
+                    <p>&nbsp;</p>
+                    <hr>
+                    <p>(Khafid)</p>
+                </div>
+                <div class="col-xs-3 text-center">
+                    
+
+                    <p>&nbsp;</p>
+
+                    <p>&nbsp;</p>
+                    <hr>
+                    <p>(Rudijanto)</p>
                 </div>
             </div>
 

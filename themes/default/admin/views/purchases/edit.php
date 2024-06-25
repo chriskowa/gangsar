@@ -440,6 +440,23 @@
                             <input type="text" class="form-control" id="pquantity">
                         </div>
                     </div>
+                    <div class="form-group">
+                            <label class="col-sm-4 control-label"><?= ucwords(lang('business_location')) ?></label>
+                            <div class="col-sm-8">
+                                <?php
+                                $bl[''] = '';                                
+                                foreach ($business_locations as $business_location) {
+                                    $bl[$business_location->id] = $business_location->name;
+                                }
+                                echo form_multiselect('business_location', $bl,'', 'id="pbusiness_location" class="form-control" data-placeholder="' . lang('select') . ' ' . lang('business_location') . '"'); ?>
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-sm-4 control-label"><?= ucwords(lang('size')) ?></label>
+                            <div class="col-sm-8">
+                                <input type="number" min="1" class="form-control" id="psize">
+                            </div>
+                        </div>
                     <?php if ($Settings->product_expiry) {
                                                 ?>
                         <div class="form-group">
