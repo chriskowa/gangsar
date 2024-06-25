@@ -21,6 +21,7 @@ class Products extends MY_Controller
         $this->digital_file_types = 'zip|psd|ai|rar|pdf|doc|docx|xls|xlsx|ppt|pptx|gif|jpg|jpeg|png|tif|txt';
         $this->allowed_file_size = '1024';
         $this->popup_attributes = ['width' => '900', 'height' => '600', 'window_name' => 'sma_popup', 'menubar' => 'yes', 'scrollbars' => 'yes', 'status' => 'no', 'resizable' => 'yes', 'screenx' => '0', 'screeny' => '0'];
+        $this->load->helper('pos');
     }
 
     /* ------------------------------------------------------- */    
@@ -2550,5 +2551,10 @@ class Products extends MY_Controller
             }
             $this->sma->generate_pdf($html, $name);
         }
+    }
+
+    public function stock_counts_print()
+    {
+        $this->load->view($this->theme . 'products/stock_counts_print');
     }
 }

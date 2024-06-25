@@ -7,7 +7,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  *  Copyright:  Tecdiary IT Solutions
  *  ==============================================================================
  */
-
+#[\AllowDynamicProperties]
 class Attachments
 {
     public function __construct($config)
