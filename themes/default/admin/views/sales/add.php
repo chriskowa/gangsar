@@ -5,6 +5,8 @@
         tax_rates = <?php echo json_encode($tax_rates); ?>;
     //var audio_success = new Audio('<?=$assets?>sounds/sound2.mp3');
     //var audio_error = new Audio('<?=$assets?>sounds/sound3.mp3');
+        var jsonWarehouses = <?= json_encode($warehouses) ?>;
+        var jsonBillers = <?= json_encode($billers) ?>;
     $(document).ready(function () {
         if (localStorage.getItem('remove_slls')) {
             if (localStorage.getItem('slitems')) {
@@ -33,6 +35,9 @@
             }
             if (localStorage.getItem('slcustomer')) {
                 localStorage.removeItem('slcustomer');
+            }
+            if (localStorage.getItem('pbusiness_location')) {
+                localStorage.removeItem('pbusiness_location');
             }
             if (localStorage.getItem('slbiller')) {
                 localStorage.removeItem('slbiller');
@@ -88,6 +93,7 @@
     ?>
         // localStorage.setItem('sldate', '<?= $this->sma->hrld($quote->date) ?>');
         localStorage.setItem('slcustomer', '<?= $quote->customer_id ?>');
+        localStorage.setItem('pbusiness_location', '<?= $quote->business_location ?>');
         localStorage.setItem('slbiller', '<?= $quote->biller_id ?>');
         localStorage.setItem('slwarehouse', '<?= $quote->warehouse_id ?>');
         localStorage.setItem('slnote', '<?= str_replace(["\r", "\n"], '', $this->sma->decode_html($quote->note)); ?>');
@@ -129,6 +135,14 @@
     } ?>
         $(document).on('change', '#slbiller', function (e) {
             localStorage.setItem('slbiller', $(this).val());
+
+            var thisVal = $(this).val();
+            $.each(jsonBillers, function(i, item) {
+                var whId = item.id;
+                if(whId == thisVal){
+                    $("#ref_city").val(item.cf1)
+                }
+            });
         });
         if (slbiller = localStorage.getItem('slbiller')) {
             $('#slbiller').val(slbiller);
@@ -261,7 +275,18 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <?= lang('reference_no', 'slref'); ?>
-                                <?php echo form_input('reference_no', ($_POST['reference_no'] ?? $slnumber), 'class="form-control input-tip" id="slref"'); ?>
+                                <?php echo form_input('reference_no', ($_POST['reference_no'] ?? $slnumber), 'class="form-control input-tip hidden" id="slref"'); ?>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input class="form-control" id="ref_city" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input class="form-control" id="ref_uname" readonly value="<?= strtoupper($_SESSION['username']) ?>">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input class="form-control" id="ref_company" readonly>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <?php if ($Owner || $Admin || !$this->session->userdata('biller_id')) {
@@ -346,6 +371,22 @@
                                                 <?php
                                                 } ?>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <?= lang('business_location', 'pbusiness_location') ?>
+                                            <?php
+                                            echo "<select class='form-control' id='pbusiness_location'>";
+                                            foreach ($business_locations as $business_location) {
+                                                echo "<option value='$business_location->id-$business_location->code'>$business_location->name</option>";
+                                            }
+                                            echo "</select>";
+                                            // $bl[''] = '';                                
+                                            // foreach ($business_locations as $business_location) {
+                                            //     $bl[$business_location->id] = $business_location->name;
+                                            // }
+                                            // echo form_dropdown('business_location', $bl,'', 'id="pbusiness_location" class="form-control" data-placeholder="' . lang('select') . ' ' . lang('business_location') . '"'); ?>
                                         </div>
                                     </div>
                                 </div>

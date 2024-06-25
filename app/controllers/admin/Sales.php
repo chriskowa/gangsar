@@ -346,6 +346,7 @@ class Sales extends MY_Controller
             $this->data['payment_ref'] = ''; //$this->site->getReference('pay');
             $bc                        = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('sales'), 'page' => lang('sales')], ['link' => '#', 'page' => lang('add_sale')]];
             $meta                      = ['page_title' => lang('add_sale'), 'bc' => $bc];
+            $this->data['business_locations'] = $this->site->getAllBusiness_location();
             $this->page_construct('sales/add', $meta, $this->data);
         }
     }
