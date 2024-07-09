@@ -1,2 +1,2 @@
-code,name,item,uk,isi,kelas_barang,category_code,subcategory_code
-BTU-1,Tes Pancing Baru,Tes Pancing,5,3,1,Accecories,Blombongan
+Kode Barang,Nama Produk,item,uk,isi,Kelas Barang,N,Kategori,Sub Kategori,HPP,Harga CV,HET
+TBUT-092,Produk Impor,Produk Impor,5,3,1,1,Accecories,Blombongan,200000,210000,300000
