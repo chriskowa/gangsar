@@ -123,7 +123,7 @@ class Products_model extends CI_Model
                     $this->db->insert('warehouses_products', ['product_id' => $product_id, 'warehouse_id' => $warehouse->id, 'quantity' => 0]);
                 }
             }
-
+            /* dihidden 9/7/24 karena tidak jadi
             if ($business_locations) {
                 if (!empty($business_locations)) {
                     foreach ($business_locations as $location_id) {
@@ -132,7 +132,7 @@ class Products_model extends CI_Model
                     }
                 }
             }
-
+            */
             $tax_rate = $this->site->getTaxRateByID($data['tax_rate']);
 
             if ($warehouse_qty && !empty($warehouse_qty)) {
@@ -449,6 +449,25 @@ class Products_model extends CI_Model
             return $q->row();
         }
         return false;
+    }
+
+    public function getCategoryIDByName($name)
+    {
+        $name = strtolower(trim($name));
+        $q = $this->db->get_where('categories', ['name' => $name], 1);
+        if ($q->num_rows() > 0) {
+            return $q->row()->id;
+        } else {
+            $data = ['name' => $name, 'code' => $this->generateCategoryCode($name)];
+            $this->db->insert('categories', $data);
+            return $this->db->insert_id();
+        }
+    }
+
+    private function generateCategoryCode($name)
+    {
+        // Generate a code based on the category name, you can customize this as needed
+        return substr(md5($name), 0, 8);
     }
 
     public function getCategoryProducts($category_id)

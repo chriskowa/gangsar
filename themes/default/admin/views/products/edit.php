@@ -108,14 +108,30 @@ if (!empty($variants)) {
                         <?= lang('weight', 'weight'); ?>
                         <?= form_input('weight', set_value('weight', ($product ? $product->weight : '')), 'class="form-control tip" id="weight"'); ?>
                     </div>
-                    <div class="form-group all">
+                    <div class="form-group standard_combo">
+                        <?= lang('size', 'size'); ?>
+                        <?= form_input('ukuran', set_value('ukuran', ($product ? $product->ukuran : '')), 'class="form-control tip" id="ukuran"'); ?>
+                    </div>
+                    <div class="form-group standard_combo">
+                        <?= lang('isi', 'isi'); ?>
+                        <?= form_input('isi', set_value('isi', ($product ? $product->isi : '')), 'class="form-control tip" id="isi"'); ?>
+                    </div>
+                    <div class="form-group standard_combo">
+                        <?= lang('kelas_barang', 'Kelas Barang'); ?>
+                        <?= form_input('kelas_barang', set_value('kelas_barang', ($product ? $product->kelas_barang : '')), 'class="form-control tip" id="kelas_barang"'); ?>
+                    </div>
+                    <div class="form-group standard_combo">
+                        <?= lang('n', 'n'); ?>
+                        <?= form_input('n', set_value('n', ($product ? $product->n : '')), 'class="form-control tip" id="n"'); ?>
+                    </div>
+                    <div class="form-group all hidden">
                         <?= lang('barcode_symbology', 'barcode_symbology') ?>
                         <?php
                         $bs = ['code25' => 'Code25', 'code39' => 'Code39', 'code128' => 'Code128', 'ean8' => 'EAN8', 'ean13' => 'EAN13', 'upca' => 'UPC-A', 'upce' => 'UPC-E'];
                         echo form_dropdown('barcode_symbology', $bs, (isset($_POST['barcode_symbology']) ? $_POST['barcode_symbology'] : ($product ? $product->barcode_symbology : 'code128')), 'class="form-control select" id="barcode_symbology" required="required" style="width:100%;"');
                         ?>
                     </div>
-                    <div class="form-group all">
+                    <div class="form-group all hidden">
                         <?= lang('brand', 'brand') ?>
                         <?php
                         $br[''] = '';
@@ -125,7 +141,7 @@ if (!empty($variants)) {
                         echo form_dropdown('brand', $br, (isset($_POST['brand']) ? $_POST['brand'] : ($product ? $product->brand : '')), 'class="form-control select" id="brand" placeholder="' . lang('select') . ' ' . lang('brand') . '" style="width:100%"')
                         ?>
                     </div>
-                    <div class="form-group all">
+                    <div class="form-group all hidden">
                         <?= lang('size', 'size') ?>
                         <?php
                         $br[''] = '';
@@ -136,7 +152,7 @@ if (!empty($variants)) {
                         ?>
                     </div>
 
-                    <div class="form-group all">
+                    <div class="form-group all hidden">
                         <?= lang('business_location', 'business_location') ?>
                         <?php
                         if (!empty($business_locations)) {
@@ -188,6 +204,123 @@ if (!empty($variants)) {
                             ?>
                         </div>
                     </div>
+                    
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <div class="standard">
+                        <div>
+                            <?php
+                            if (!empty($warehouses) || !empty($warehouses_products)) {
+                                echo '<div class="row"><div class="col-md-12"><div class="well">';
+                                echo '<p><strong>' . lang('warehouse_quantity') . '</strong></p>';
+                                if (!empty($warehouses_products)) {
+                                    foreach ($warehouses_products as $wh_pr) {
+                                        echo '<span class="bold text-info">' . $wh_pr->name . ': <input type="hidden" value="' . $this->sma->formatDecimal($wh_pr->quantity) . '" id="vwh_qty_' . $wh_pr->id . '"><span class="padding05" id="rwh_qty_' . $wh_pr->id . '">' . $this->sma->formatQuantity($wh_pr->quantity) . '</span>' . ($wh_pr->rack ? ' (<span class="padding05" id="rrack_' . $wh_pr->id . '">' . $wh_pr->rack . '</span>)' : '') . '</span><br>';
+                                    }
+                                }
+                                echo '<div class="clearfix"></div></div></div></div>';
+                            }
+                            ?>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div id="attrs"></div>
+                        <div class="well well-sm">
+                            <?php
+                            if ($product_options) {
+                                ?>
+                            <table class="table table-bordered table-condensed table-striped"
+                                   style="<?= $this->input->post('attributes') || $product_options ? '' : 'display:none;'; ?> margin-top: 10px;">
+                                <thead>
+                                <tr class="active">
+                                    <th><?= lang('name') ?></th>
+                                    <th><?= lang('warehouse') ?></th>
+                                    <th><?= lang('quantity') ?></th>
+                                    <th><?= lang('price_addition') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                foreach ($product_options as $option) {
+                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="attr_id[]" value="' . $option->id . '"><span>' . $option->name . '</span></td><td class="code text-center col-xs-3"><span>' . $option->wh_name . '</span></td><td class="quantity text-center col-xs-2"><span>' . $this->sma->formatQuantity($option->wh_qty) . '</span></td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->price) . '</td></tr>';
+                                } ?>
+                            </tbody>
+                            </table>
+                            <?php
+                            }
+                            if ($product_variants) {
+                                ?>
+                                <h3 class="bold"><?=lang('update_variants'); ?></h3>
+                                <table class="table table-bordered table-condensed table-striped" style="margin-top: 10px;">
+                                <thead>
+                                <tr class="active">
+                                    <th class="col-xs-8"><?= lang('name') ?></th>
+                                    <th class="col-xs-4"><?= lang('price_addition') ?></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                foreach ($product_variants as $pv) {
+                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="variant_id_' . $pv->id . '" value="' . $pv->id . '"><input type="text" name="variant_name_' . $pv->id . '" value="' . $pv->name . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_price_' . $pv->id . '" value="' . $pv->price . '" class="form-control"></td></tr>';
+                                } ?>
+                                </tbody>
+                                </table>
+                                <?php
+                            }
+                            ?>
+                            <div class="form-group hidden">
+                                <input type="checkbox" class="checkbox" name="attributes" id="attributes" <?= $this->input->post('attributes') ? 'checked="checked"' : ''; ?>>
+                                <label for="attributes" class="padding05"><?= lang('add_more_variants'); ?></label>
+                                <?= lang('eg_sizes_colors'); ?>
+                            </div>
+
+                            <div id="attr-con" <?= $this->input->post('attributes') ? '' : 'style="display:none;"'; ?>>
+                                <div class="form-group" id="ui" style="margin-bottom: 0;">
+                                    <div class="input-group">
+                                        <?php
+                                        echo form_input('attributesInput', '', 'class="form-control select-tags" id="attributesInput" placeholder="' . $this->lang->line('enter_attributes') . '"'); ?>
+                                        <div class="input-group-addon" style="padding: 2px 5px;">
+                                            <a href="#" id="addAttributes">
+                                                <i class="fa fa-2x fa-plus-circle" id="addIcon"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table id="attrTable" class="table table-bordered table-condensed table-striped" style="margin-bottom: 0; margin-top: 10px;">
+                                        <thead>
+                                            <tr class="active">
+                                                <th><?= lang('name') ?></th>
+                                                <th><?= lang('warehouse') ?></th>
+                                                <th><?= lang('quantity') ?></th>
+                                                <th><?= lang('price_addition') ?></th>
+                                                <th><i class="fa fa-times attr-remove-all"></i></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody><?php
+                                            if ($this->input->post('attributes')) {
+                                                $a = sizeof($_POST['attr_name']);
+                                                for ($r = 0; $r <= $a; $r++) {
+                                                    if (isset($_POST['attr_name'][$r]) && (isset($_POST['attr_warehouse'][$r]) || isset($_POST['attr_quantity'][$r]))) {
+                                                        echo '<tr class="attr">
+                                                        <td><input type="hidden" name="attr_name[]" value="' . $_POST['attr_name'][$r] . '"><span>' . $_POST['attr_name'][$r] . '</span></td>
+                                                        <td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="' . (isset($_POST['attr_warehouse'][$r]) ? $_POST['attr_warehouse'][$r] : '') . '"><input type="hidden" name="attr_wh_name[]" value="' . (isset($_POST['attr_wh_name'][$r]) ? $_POST['attr_wh_name'][$r] : '') . '"><span>' . (isset($_POST['attr_wh_name'][$r]) ? $_POST['attr_wh_name'][$r] : '') . '</span></td>
+                                                        <td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="' . $_POST['attr_quantity'][$r] . '"><span>' . $_POST['attr_quantity'][$r] . '</span></td>
+                                                        <td class="price text-right"><input type="hidden" name="attr_price[]" value="' . $_POST['attr_price'][$r] . '"><span>' . $_POST['attr_price'][$r] . '</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td>
+                                                    </tr>';
+                                                    }
+                                                }
+                                            }
+                                        ?></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+
                     <div class="form-group standard">
                         <?= lang('product_unit', 'unit'); ?>
                         <?php
@@ -219,6 +352,10 @@ if (!empty($variants)) {
                     <div class="form-group all">
                         <?= lang('product_price', 'price') ?>
                         <?= form_input('price', (isset($_POST['price']) ? $_POST['price'] : ($product ? $this->sma->formatDecimal($product->price) : '')), 'class="form-control tip" id="price" required="required"') ?>
+                    </div>
+                    <div class="form-group all">
+                        <?= lang('harga_cv', 'Harga CV') ?>
+                        <?= form_input('harga_cv', (isset($_POST['harga_cv']) ? $_POST['harga_cv'] : ($product ? $this->sma->formatDecimal($product->harga_cv) : '')), 'class="form-control tip" id="harga_cv"') ?>
                     </div>
 
                     <div class="form-group">
@@ -298,121 +435,7 @@ if (!empty($variants)) {
                                data-show-preview="false" class="form-control file" accept="image/*">
                     </div>
                     <div id="img-details"></div>
-                </div>
-                <div class="col-md-6 col-md-offset-1">
-                    <div class="standard">
-                        <div>
-                            <?php
-                            if (!empty($warehouses) || !empty($warehouses_products)) {
-                                echo '<div class="row"><div class="col-md-12"><div class="well">';
-                                echo '<p><strong>' . lang('warehouse_quantity') . '</strong></p>';
-                                if (!empty($warehouses_products)) {
-                                    foreach ($warehouses_products as $wh_pr) {
-                                        echo '<span class="bold text-info">' . $wh_pr->name . ': <input type="hidden" value="' . $this->sma->formatDecimal($wh_pr->quantity) . '" id="vwh_qty_' . $wh_pr->id . '"><span class="padding05" id="rwh_qty_' . $wh_pr->id . '">' . $this->sma->formatQuantity($wh_pr->quantity) . '</span>' . ($wh_pr->rack ? ' (<span class="padding05" id="rrack_' . $wh_pr->id . '">' . $wh_pr->rack . '</span>)' : '') . '</span><br>';
-                                    }
-                                }
-                                echo '<div class="clearfix"></div></div></div></div>';
-                            }
-                            ?>
-                        </div>
-                        <div class="clearfix"></div>
 
-                        <div id="attrs"></div>
-                        <div class="well well-sm">
-                            <?php
-                            if ($product_options) {
-                                ?>
-                            <table class="table table-bordered table-condensed table-striped"
-                                   style="<?= $this->input->post('attributes') || $product_options ? '' : 'display:none;'; ?> margin-top: 10px;">
-                                <thead>
-                                <tr class="active">
-                                    <th><?= lang('name') ?></th>
-                                    <th><?= lang('warehouse') ?></th>
-                                    <th><?= lang('quantity') ?></th>
-                                    <th><?= lang('price_addition') ?></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php
-                                foreach ($product_options as $option) {
-                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="attr_id[]" value="' . $option->id . '"><span>' . $option->name . '</span></td><td class="code text-center col-xs-3"><span>' . $option->wh_name . '</span></td><td class="quantity text-center col-xs-2"><span>' . $this->sma->formatQuantity($option->wh_qty) . '</span></td><td class="price text-right col-xs-2">' . $this->sma->formatMoney($option->price) . '</td></tr>';
-                                } ?>
-                            </tbody>
-                            </table>
-                            <?php
-                            }
-                            if ($product_variants) {
-                                ?>
-                                <h3 class="bold"><?=lang('update_variants'); ?></h3>
-                                <table class="table table-bordered table-condensed table-striped" style="margin-top: 10px;">
-                                <thead>
-                                <tr class="active">
-                                    <th class="col-xs-8"><?= lang('name') ?></th>
-                                    <th class="col-xs-4"><?= lang('price_addition') ?></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php
-                                foreach ($product_variants as $pv) {
-                                    echo '<tr><td class="col-xs-3"><input type="hidden" name="variant_id_' . $pv->id . '" value="' . $pv->id . '"><input type="text" name="variant_name_' . $pv->id . '" value="' . $pv->name . '" class="form-control"></td><td class="price text-right col-xs-2"><input type="text" name="variant_price_' . $pv->id . '" value="' . $pv->price . '" class="form-control"></td></tr>';
-                                } ?>
-                                </tbody>
-                                </table>
-                                <?php
-                            }
-                            ?>
-                            <div class="form-group">
-                                <input type="checkbox" class="checkbox" name="attributes" id="attributes" <?= $this->input->post('attributes') ? 'checked="checked"' : ''; ?>>
-                                <label for="attributes" class="padding05"><?= lang('add_more_variants'); ?></label>
-                                <?= lang('eg_sizes_colors'); ?>
-                            </div>
-
-                            <div id="attr-con" <?= $this->input->post('attributes') ? '' : 'style="display:none;"'; ?>>
-                                <div class="form-group" id="ui" style="margin-bottom: 0;">
-                                    <div class="input-group">
-                                        <?php
-                                        echo form_input('attributesInput', '', 'class="form-control select-tags" id="attributesInput" placeholder="' . $this->lang->line('enter_attributes') . '"'); ?>
-                                        <div class="input-group-addon" style="padding: 2px 5px;">
-                                            <a href="#" id="addAttributes">
-                                                <i class="fa fa-2x fa-plus-circle" id="addIcon"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div style="clear:both;"></div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table id="attrTable" class="table table-bordered table-condensed table-striped" style="margin-bottom: 0; margin-top: 10px;">
-                                        <thead>
-                                            <tr class="active">
-                                                <th><?= lang('name') ?></th>
-                                                <th><?= lang('warehouse') ?></th>
-                                                <th><?= lang('quantity') ?></th>
-                                                <th><?= lang('price_addition') ?></th>
-                                                <th><i class="fa fa-times attr-remove-all"></i></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody><?php
-                                            if ($this->input->post('attributes')) {
-                                                $a = sizeof($_POST['attr_name']);
-                                                for ($r = 0; $r <= $a; $r++) {
-                                                    if (isset($_POST['attr_name'][$r]) && (isset($_POST['attr_warehouse'][$r]) || isset($_POST['attr_quantity'][$r]))) {
-                                                        echo '<tr class="attr">
-                                                        <td><input type="hidden" name="attr_name[]" value="' . $_POST['attr_name'][$r] . '"><span>' . $_POST['attr_name'][$r] . '</span></td>
-                                                        <td class="code text-center"><input type="hidden" name="attr_warehouse[]" value="' . (isset($_POST['attr_warehouse'][$r]) ? $_POST['attr_warehouse'][$r] : '') . '"><input type="hidden" name="attr_wh_name[]" value="' . (isset($_POST['attr_wh_name'][$r]) ? $_POST['attr_wh_name'][$r] : '') . '"><span>' . (isset($_POST['attr_wh_name'][$r]) ? $_POST['attr_wh_name'][$r] : '') . '</span></td>
-                                                        <td class="quantity text-center"><input type="hidden" name="attr_quantity[]" value="' . $_POST['attr_quantity'][$r] . '"><span>' . $_POST['attr_quantity'][$r] . '</span></td>
-                                                        <td class="price text-right"><input type="hidden" name="attr_price[]" value="' . $_POST['attr_price'][$r] . '"><span>' . $_POST['attr_price'][$r] . '</span></span></td><td class="text-center"><i class="fa fa-times delAttr"></i></td>
-                                                    </tr>';
-                                                    }
-                                                }
-                                            }
-                                        ?></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-
-                    </div>
                     <div class="combo" style="display:none;">
 
                         <div class="form-group">
@@ -478,12 +501,12 @@ if (!empty($variants)) {
                                     ?>
                                 </div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 hidden">
                                 <div class="form-group">
                                     <?= form_input('supplier_part_no', (isset($_POST['supplier_part_no']) ? $_POST['supplier_part_no'] : ''), 'class="form-control tip" id="supplier_part_no" placeholder="' . lang('supplier_part_no') . '"'); ?>
                                 </div>
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-xs-6 hidden">
                                 <div class="form-group">
                                     <?= form_input('supplier_price', (isset($_POST['supplier_price']) ? $_POST['supplier_price'] : ''), 'class="form-control tip" id="supplier_price" placeholder="' . lang('supplier_price') . '"'); ?>
                                 </div>
@@ -494,7 +517,7 @@ if (!empty($variants)) {
 
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12 hidden">
 
                     <div class="form-group">
                         <input name="featured" type="checkbox" class="checkbox" id="featured" value="1" <?= empty($product->featured) ? '' : 'checked="checked"' ?>/>
@@ -558,8 +581,8 @@ if (!empty($variants)) {
 
 
                     </div>
-
-
+                </div>
+                <div class="col-md-12">
                     <div class="form-group all">
                         <?= lang('product_details', 'product_details') ?>
                         <?= form_textarea('product_details', (isset($_POST['product_details']) ? $_POST['product_details'] : ($product ? $product->product_details : '')), 'class="form-control" id="details"'); ?>
@@ -568,11 +591,9 @@ if (!empty($variants)) {
                         <?= lang('product_details_for_invoice', 'details') ?>
                         <?= form_textarea('details', (isset($_POST['details']) ? $_POST['details'] : ($product ? $product->details : '')), 'class="form-control" id="details"'); ?>
                     </div>
-
                     <div class="form-group">
                         <?php echo form_submit('edit_product', $this->lang->line('edit_product'), 'class="btn btn-primary"'); ?>
                     </div>
-
                 </div>
                 <?= form_close(); ?>
 

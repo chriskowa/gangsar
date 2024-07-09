@@ -749,6 +749,11 @@
                                                 <i class="fa fa-building-o"></i><span class="text"> <?= lang('business_location'); ?></span>
                                             </a>
                                         </li>
+                                        <li id="system_settings_sales_register">
+                                            <a href="<?= admin_url('pos/registers') ?>">
+                                                <i class="fa fa-money"></i><span class="text"> <?= lang('sales_register'); ?></span>
+                                            </a>
+                                        </li>
                                         <li id="system_settings_email_templates">
                                             <a href="<?= admin_url('system_settings/email_templates') ?>">
                                                 <i class="fa fa-envelope"></i><span class="text"> <?= lang('email_templates'); ?></span>

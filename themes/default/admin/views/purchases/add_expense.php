@@ -51,6 +51,28 @@
             </div>
 
             <div class="form-group">
+                <?= lang('business_location', 'business_location'); ?>
+                <?php
+                $bl[''] = lang('select') . ' ' . lang('business_location');
+                foreach ($business_locations as $business_location) {
+                    $bl[$business_location->id] = $business_location->name;
+                }
+                echo form_dropdown('business_location', $bl, ($_POST['business_location'] ?? ''), 'id="business_location" class="form-control input-tip select" style="width:100%;" ');
+                ?>
+            </div>
+
+            <div class="form-group">
+                <label for="accountz">Akun</label>
+                <?php
+                $ak[''] = lang('select') . ' ' . 'akun';
+                foreach ($account as $accountz) {
+                    $ak[$accountz->id] = $accountz->name;
+                }
+                echo form_dropdown('accountz', $ak, ($_POST['accountz'] ?? ''), 'id="accountz" class="form-control input-tip select" style="width:100%;" ');
+                ?>
+            </div>
+
+            <div class="form-group">
                 <?= lang('amount', 'amount'); ?>
                 <input name="amount" type="text" id="amount" value="" class="pa form-control kb-pad amount"
                        required="required"/>
