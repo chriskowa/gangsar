@@ -12,6 +12,16 @@
                         <?= lang('cash_in_hand', 'cash_in_hand') ?>
                         <?= form_input('cash_in_hand', '', 'id="cash_in_hand" class="form-control"'); ?>
                     </div>
+                    <div class="form-group">
+                        <label><?= lang('business_location') ?></label>                        
+                            <?php
+                            $bl[''] = '';                                
+                            foreach ($business_locations as $business_location) {
+                                $bl[$business_location->id] = $business_location->name;
+                            }
+                            echo form_dropdown('business_location', $bl,'', 'id="pbusiness_location" class="form-control input-tip select" data-placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%;" '); ?>
+                        
+                    </div>
                     <?php echo form_submit('open_register', lang('open_register'), 'class="btn btn-primary" id="open_register"'); ?>
                     <?php echo form_close(); ?>
                     <div class="clearfix"></div>

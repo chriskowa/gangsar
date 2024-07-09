@@ -303,7 +303,27 @@ class Pos_model extends CI_Model
         } elseif ($data['transfer_opened_bills'] != 0) {
             $this->db->update('suspended_bills', ['created_by' => $data['transfer_opened_bills']], ['created_by' => $user_id]);
         }
-        if ($this->db->update('pos_register', $data, ['id' => $rid, 'user_id' => $user_id])) {
+        if ($this->db->update('sales_register', $data, ['id' => $rid, 'user_id' => $user_id])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function closeSalesRegister($rid, $user_id, $data)
+    {
+        if (!$rid) {
+            $rid = $this->session->userdata('register_id');
+        }
+        if (!$user_id) {
+            $user_id = $this->session->userdata('user_id');
+        }
+        if ($data['transfer_opened_bills'] == -1) {
+            $this->site->log('POS Bills', []);
+            $this->db->delete('suspended_bills', ['created_by' => $user_id]);
+        } elseif ($data['transfer_opened_bills'] != 0) {
+            $this->db->update('suspended_bills', ['created_by' => $data['transfer_opened_bills']], ['created_by' => $user_id]);
+        }
+        if ($this->db->update('sales_register', $data, ['id' => $rid, 'user_id' => $user_id])) {
             return true;
         }
         return false;
@@ -554,8 +574,22 @@ class Pos_model extends CI_Model
     public function getOpenRegisters()
     {
         $this->db->select('date, user_id, cash_in_hand, CONCAT(' . $this->db->dbprefix('users') . ".first_name, ' ', " . $this->db->dbprefix('users') . ".last_name, ' - ', " . $this->db->dbprefix('users') . '.email) as user', false)
-            ->join('users', 'users.id=pos_register.user_id', 'left');
-        $q = $this->db->get_where('pos_register', ['status' => 'open']);
+            ->join('users', 'users.id=sales_register.user_id', 'left');
+        $q = $this->db->get_where('sales_register', ['status' => 'open']);
+        if ($q->num_rows() > 0) {
+            foreach ($q->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
+    }
+
+    public function getSalesRegisters()
+    {
+        $this->db->select('date, user_id, cash_in_hand, CONCAT(' . $this->db->dbprefix('users') . ".first_name, ' ', " . $this->db->dbprefix('users') . ".last_name, ' - ', " . $this->db->dbprefix('users') . '.email) as user', false)
+            ->join('users', 'users.id=sales_register.user_id', 'left');
+        $q = $this->db->get_where('sales_register', ['status' => 'open']);
         if ($q->num_rows() > 0) {
             foreach ($q->result() as $row) {
                 $data[] = $row;
@@ -1230,7 +1264,15 @@ class Pos_model extends CI_Model
 
     public function openRegister($data)
     {
-        if ($this->db->insert('pos_register', $data)) {
+        if ($this->db->insert('sales_register', $data)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function openSalesRegister($data)
+    {
+        if ($this->db->insert('sales_register', $data)) {
             return true;
         }
         return false;
@@ -1277,7 +1319,19 @@ class Pos_model extends CI_Model
         if (!$user_id) {
             $user_id = $this->session->userdata('user_id');
         }
-        $q = $this->db->get_where('pos_register', ['user_id' => $user_id, 'status' => 'open'], 1);
+        $q = $this->db->get_where('sales_register', ['user_id' => $user_id, 'status' => 'open'], 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return false;
+    }
+
+    public function registerSalesData($user_id)
+    {
+        if (!$user_id) {
+            $user_id = $this->session->userdata('user_id');
+        }
+        $q = $this->db->get_where('sales_register', ['user_id' => $user_id, 'status' => 'open'], 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }

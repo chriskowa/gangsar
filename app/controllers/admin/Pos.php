@@ -1254,18 +1254,20 @@ class Pos extends MY_Controller
         if (true == $this->form_validation->run()) {
             $data = [
                 'date'         => date('Y-m-d H:i:s'),
+                'business_location_id'=> $this->input->post('business_locations'),
                 'cash_in_hand' => $this->input->post('cash_in_hand'),
                 'user_id'      => $this->session->userdata('user_id'),
                 'status'       => 'open',
             ];
         }
         if (true == $this->form_validation->run() && $this->pos_model->openRegister($data)) {
-            $this->session->set_flashdata('message', lang('welcome_to_pos'));
-            admin_redirect('pos');
+            //$this->session->set_flashdata('message', lang('welcome_to_pos'));
+            admin_redirect('pos/registers');
         } else {
             $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
             $bc = [['link' => base_url(), 'page' => lang('home')], ['link' => '#', 'page' => lang('open_register')]];
             $meta = ['page_title' => lang('open_register'), 'bc' => $bc];
+            $this->data['business_locations'] = $this->site->getAllBusiness_location();
             $this->page_construct('pos/open_register', $meta, $this->data);
         }
     }
@@ -1376,7 +1378,8 @@ class Pos extends MY_Controller
         $this->sma->checkPermissions();
 
         $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
-        $this->data['registers'] = $this->pos_model->getOpenRegisters();
+        //$this->data['registers'] = $this->pos_model->getOpenRegisters();
+        $this->data['registers'] = $this->pos_model->getSalesRegisters();
         $bc = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('pos'), 'page' => lang('pos')], ['link' => '#', 'page' => lang('open_registers')]];
         $meta = ['page_title' => lang('open_registers'), 'bc' => $bc];
         $this->page_construct('pos/registers', $meta, $this->data);

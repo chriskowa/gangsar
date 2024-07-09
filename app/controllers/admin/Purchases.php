@@ -325,6 +325,8 @@ class Purchases extends MY_Controller
                 'note'         => $this->input->post('note', true),
                 'category_id'  => $this->input->post('category', true),
                 'warehouse_id' => $this->input->post('warehouse', true),
+                'business_location_id' => $this->input->post('business_location', true),
+                'account_id' => $this->input->post('accountz', true),
             ];
 
             $attachments        = $this->attachments->upload();
@@ -342,6 +344,8 @@ class Purchases extends MY_Controller
             $this->data['error']      = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['exnumber']   = ''; //$this->site->getReference('ex');
             $this->data['warehouses'] = $this->site->getAllWarehouses();
+            $this->data['business_locations'] = $this->site->getAllBusiness_location();
+            $this->data['account'] = $this->site->getAllAccounts();
             $this->data['categories'] = $this->purchases_model->getExpenseCategories();
             $this->data['modal_js']   = $this->site->modal_js();
             $this->load->view($this->theme . 'purchases/add_expense', $this->data);
@@ -802,6 +806,8 @@ class Purchases extends MY_Controller
                 'note'         => $this->input->post('note', true),
                 'category_id'  => $this->input->post('category', true),
                 'warehouse_id' => $this->input->post('warehouse', true),
+                'business_location_id' => $this->input->post('business_location', true),
+                'account_id' => $this->input->post('accountz', true),
             ];
 
             $attachments        = $this->attachments->upload();
@@ -819,6 +825,8 @@ class Purchases extends MY_Controller
             $this->data['error']      = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['expense']    = $this->purchases_model->getExpenseByID($id);
             $this->data['warehouses'] = $this->site->getAllWarehouses();
+            $this->data['business_locations'] = $this->site->getAllBusiness_location();
+            $this->data['account'] = $this->site->getAllAccounts();
             $this->data['modal_js']   = $this->site->modal_js();
             $this->data['categories'] = $this->purchases_model->getExpenseCategories();
             $this->load->view($this->theme . 'purchases/edit_expense', $this->data);

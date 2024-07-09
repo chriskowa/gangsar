@@ -2,6 +2,17 @@
 <div class="box">
     <div class="box-header">
         <h2 class="blue"><i class="fa-fw fa fa-briefcase"></i><?= lang('open_registers'); ?></h2>
+        <div class="box-icon">
+            <ul class="btn-tasks">
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon fa fa-tasks tip"  data-placement="left" title="<?= lang('actions') ?>"></i></a>
+                    <ul class="dropdown-menu pull-right tasks-menus" role="menu" aria-labelledby="dLabel">
+                        <li><a href="<?= admin_url('pos/open_register') ?>"><i class="fa fa-plus-circle"></i> <?= lang('add_register') ?></a></li>                        
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
     </div>
     <div class="box-content">
         <p class="introtext"><?= lang('review_opened_registers'); ?></p>
