@@ -570,6 +570,8 @@ class Purchases extends MY_Controller
             $total_cgst       = $total_sgst       = $total_igst       = 0;
             for ($r = 0; $r < $i; $r++) {
                 $item_code          = $_POST['product'][$r];
+                $unit_price      = $this->sma->formatDecimal($_POST['unit_price'][$r]);
+                $item_harga_cv      = $this->sma->formatDecimal($_POST['item_harga_cv'][$r]);
                 $item_net_cost      = $this->sma->formatDecimal($_POST['net_cost'][$r]);
                 $unit_cost          = $this->sma->formatDecimal($_POST['unit_cost'][$r]);
                 $real_unit_cost     = $this->sma->formatDecimal($_POST['real_unit_cost'][$r]);
@@ -632,6 +634,8 @@ class Purchases extends MY_Controller
                     $unit     = $this->site->getUnitByID($item_unit);
 
                     $item = [
+                        'unit_price'        => $unit_price,
+                        'harga_cv'          => $item_harga_cv,
                         'product_id'        => $product_details->id,
                         'product_code'      => $item_code,
                         'product_name'      => $product_details->name,
@@ -721,11 +725,14 @@ class Purchases extends MY_Controller
             $data['attachment'] = !empty($attachments) ? 1 : null;
             // $this->sma->print_arrays($data, $products);
         }
+        echo "<pre>";
+        print_r($_POST);
+        exit;
 
         if ($this->form_validation->run() == true && $this->purchases_model->updatePurchase($id, $data, $products, $attachments)) {
             $this->session->set_userdata('remove_pols', 1);
             $this->session->set_flashdata('message', $this->lang->line('purchase_added'));
-            admin_redirect('purchases');
+            // admin_redirect('purchases');
         } else {
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['inv']   = $inv;
@@ -744,7 +751,10 @@ class Purchases extends MY_Controller
                     $this->session->set_flashdata('error', lang('product_deleted_x_edit'));
                     redirect($_SERVER['HTTP_REFERER']);
                 }
-                $row->business_location = explode(',', $item->business_location);
+                // $row->business_location = explode(',', $item->business_location);
+                $row->pprice = $this->sma->formatDecimal($item->price, 0); //as harga di ui
+                $row->potherPrice = $this->sma->formatDecimal($item->harga_cv, 0);
+                $row->business_location = $item->business_location;
                 $row->size = $item->size;
                 $row->expiry           = (($item->expiry && $item->expiry != '0000-00-00') ? $this->sma->hrsd($item->expiry) : '');
                 $row->base_quantity    = $item->quantity;

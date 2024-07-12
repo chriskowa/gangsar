@@ -152,12 +152,12 @@ $allow_discount = ($Owner || $Admin || $this->session->userdata('allow_discount'
                         <div class="col-md-4">
                             <div class="form-group">
                                 <?= lang('reference_no', 'slref'); ?>
-                                <?php echo form_input('reference_no', ($_POST['reference_no'] ?? ''), 'class="form-control input-tip" id="slref" required="required"'); ?>
+                                <?php echo form_input('reference_no', ($_POST['reference_no'] ?? ''), 'class="form-control input-tip" id="slref" readonly required="required"'); ?>
                             </div>
                         </div>
                         <?php if ($Owner || $Admin || !$this->session->userdata('biller_id')) {
                     ?>
-                            <div class="col-md-4">
+                            <div class="col-md-4" style="display: none;">
                                 <div class="form-group">
                                     <?= lang('biller', 'slbiller'); ?>
                                     <?php

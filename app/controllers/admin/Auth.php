@@ -149,6 +149,7 @@ class Auth extends MY_Controller
                 'view_right'     => $this->input->post('view_right'),
                 'edit_right'     => $this->input->post('edit_right'),
                 'allow_discount' => $this->input->post('allow_discount'),
+                'user_code'      => $this->input->post('user_code'),
             ];
             $active = $this->input->post('status');
         }
@@ -336,6 +337,7 @@ class Auth extends MY_Controller
                     $data['password'] = $this->input->post('password');
                 }
             }
+            $data['user_code'] = $this->input->post('user_code');;
             //$this->sma->print_arrays($data);
         }
         if (true === $this->form_validation->run() && $this->ion_auth->update($user->id, $data)) {

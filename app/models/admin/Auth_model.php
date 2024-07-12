@@ -783,7 +783,7 @@ class Auth_model extends CI_Model
         $this->trigger_events('extra_where');
         $this->load->helper('email');
         $this->identity_column = valid_email($identity) ? 'email' : 'username';
-        $query                 = $this->db->select($this->identity_column . ', username, email, id, password, active, last_login, last_ip_address, avatar, gender, group_id, warehouse_id, biller_id, company_id, view_right, edit_right, allow_discount, show_cost, show_price')
+        $query                 = $this->db->select($this->identity_column . ', username, email, id, password, active, last_login, last_ip_address, avatar, gender, group_id, warehouse_id, biller_id, company_id, view_right, edit_right, allow_discount, show_cost, show_price, user_code')
             ->where($this->identity_column, $this->db->escape_str($identity))
             ->limit(1)
             ->get($this->tables['users']);

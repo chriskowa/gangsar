@@ -136,11 +136,20 @@
         $(document).on('change', '#slbiller', function (e) {
             localStorage.setItem('slbiller', $(this).val());
 
-            var thisVal = $(this).val();
+            /*var thisVal = $(this).val();
             $.each(jsonBillers, function(i, item) {
                 var whId = item.id;
                 if(whId == thisVal){
                     $("#ref_city").val(item.cf1)
+                }
+            });*/
+        });
+        $(document).on('change', '#slwarehouse', function (e) {
+            var thisVal = $(this).val();
+            $.each(jsonWarehouses, function(i, item) {
+                var whId = item.id;
+                if(whId == thisVal){
+                    $("#ref_city").val(item.code)
                 }
             });
         });
@@ -278,20 +287,20 @@
                                 <?php echo form_input('reference_no', ($_POST['reference_no'] ?? $slnumber), 'class="form-control input-tip hidden" id="slref"'); ?>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <input class="form-control" id="ref_city" readonly>
+                                        <input class="form-control" id="ref_city" name="code1" readonly>
                                     </div>
                                     <div class="col-md-4">
-                                        <input class="form-control" id="ref_uname" readonly value="<?= strtoupper($_SESSION['username']) ?>">
+                                        <input class="form-control" id="ref_uname" name="code2" readonly value="<?= $userLogin->user_code ?>">
                                     </div>
                                     <div class="col-md-4">
-                                        <input class="form-control" id="ref_company" readonly>
+                                        <input class="form-control" id="ref_company" name="code3" readonly>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <?php if ($Owner || $Admin || !$this->session->userdata('biller_id')) {
                     ?>
-                            <div class="col-md-4">
+                            <div class="col-md-4" style="display: none;">
                                 <div class="form-group">
                                     <?= lang('biller', 'slbiller'); ?>
                                     <?php

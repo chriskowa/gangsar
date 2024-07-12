@@ -6,6 +6,9 @@ class Sales extends MY_Controller
 {
     public function __construct()
     {
+        /*invoice code
+        *   KODEGUDANG.USER.CV.URUTAN
+        */
         parent::__construct();
 
         if (!$this->loggedIn) {
@@ -38,6 +41,10 @@ class Sales extends MY_Controller
     public function add($quote_id = null)
     {
         $this->sma->checkPermissions();
+        
+        $userLogin = $this->db->where(['username'=>$_SESSION['username']])->get('users')->row();
+        $this->data['userLogin'] = $userLogin;
+
         $sale_id = $this->input->get('sale_id') ? $this->input->get('sale_id') : null;
 
         $this->form_validation->set_message('is_natural_no_zero', lang('no_zero_required'));
@@ -53,6 +60,12 @@ class Sales extends MY_Controller
             } else {
                 $date = date('Y-m-d H:i:s');
             }
+            
+            $nextAi           = $this->db->order_by('id','desc')->get('sales')->row();
+            $code1            = $this->input->post('code1');
+            $code2            = $this->input->post('code2');
+            $code3            = $this->input->post('code3');
+            $reference        = "$code1-$code2-$code3-$nextAi->id";
             $warehouse_id     = $this->input->post('warehouse');
             $customer_id      = $this->input->post('customer');
             $biller_id        = $this->input->post('biller');

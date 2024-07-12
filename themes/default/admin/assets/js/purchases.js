@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('#pbusiness_location').select2();
+    // $('#pbusiness_location').select2();
     $('body a, body button').attr('tabindex', -1);
     check_add_item_val();
     if (site.settings.set_focus != 1) {
@@ -370,12 +370,17 @@ $(document).ready(function () {
         $('#pquantity').val(qty);
         $('#old_qty').val(qty);
         $('#pcost').val(unit_cost);
-        $('#pprice').val(unit_price);
+        // $('#pprice').val(unit_price);
+        $('#potherPrice').val(item.row.potherPrice);
+        $('#pprice').val(item.row.pprice);
         $('#punit_cost').val(formatDecimal(parseFloat(unit_cost) + parseFloat(pr_tax_val)));
         $('#poption').select2('val', item.row.option);
         $('#old_cost').val(unit_cost);
         $('#row_id').val(row_id);
         $('#item_id').val(item_id);
+        $('#pbusiness_location').val(business_location);
+        // alert(business_location)
+        // if (!$('#pbusiness_location').data('select2'))
         $('#pbusiness_location').select2('val',business_location);
         $('#psize').val(size);
         $('#pexpiry').val(row.children().children('.rexpiry').val());
@@ -520,6 +525,8 @@ $(document).ready(function () {
             (poitems[item_id].row.business_location = business_location),
             (poitems[item_id].row.size = size),
             (poitems[item_id].row.real_unit_cost = parseFloat($('#pcost').val())),
+            (poitems[item_id].row.potherPrice = parseFloat($('#potherPrice').val())),
+            (poitems[item_id].row.pprice = parseFloat($('#pprice').val())),
             (poitems[item_id].row.tax_rate = new_pr_tax),
             (poitems[item_id].tax_rate = new_pr_tax_rate),
             (poitems[item_id].row.discount = $('#pdiscount').val() ? $('#pdiscount').val() : '0'),
@@ -690,7 +697,8 @@ function loadItems() {
                 item_type = item.row.type,
                 combo_items = item.combo_items,
                 item_cost = item.row.cost,
-                item_price = item.row.price,
+                item_price = item.row.pprice,
+                item_harga_cv = item.row.potherPrice,
                 item_business_location = item.row.business_location,
                 item_size = item.row.size,
                 item_oqty = item.row.oqty,
@@ -808,6 +816,8 @@ function loadItems() {
                 unit_cost +
                 '"><input class="ruprice" name="unit_price[]" type="hidden" value="' +
                 item_price +
+                '"><input class="ruprice" name="item_harga_cv[]" type="hidden" value="' +
+                item_harga_cv +
                 '"><input class="realucost" name="real_unit_cost[]" type="hidden" value="' +
                 item.row.real_unit_cost +
                 '"><span class="text-right scost" id="scost_' +
