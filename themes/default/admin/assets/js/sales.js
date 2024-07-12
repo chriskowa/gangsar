@@ -1,4 +1,12 @@
 $(document).ready(function (e) {
+    $("#slbiller").change();
+    $("#pbusiness_location").change(function(){
+        v = $(this).val();
+        vsplit = v.split('-');
+        vcode = vsplit[1];
+        $("#ref_company").val(vcode)
+    })
+    $("#pbusiness_location").change();
     $('body a, body button').attr('tabindex', -1);
     check_add_item_val();
     if (site.settings.set_focus != 1) {
@@ -383,6 +391,14 @@ $(document).ready(function (e) {
 
     $('#slwarehouse').change(function (e) {
         localStorage.setItem('slwarehouse', $(this).val());
+
+        /*var thisVal = $(this).val();
+        $.each(jsonWarehouses, function(i, item) {
+            var whId = item.id;
+            if(whId == thisVal){
+                $("#ref_company").val(item.code)
+            }
+        });*/
     });
     if ((slwarehouse = localStorage.getItem('slwarehouse'))) {
         $('#slwarehouse').select2('val', slwarehouse);
