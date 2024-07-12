@@ -2137,6 +2137,17 @@ class system_settings extends MY_Controller
         echo $this->datatables->generate();
     }
 
+    public function getSalesRegister()
+    {
+        $this->load->library('datatables');
+        $this->datatables
+            ->select("{$this->db->dbprefix('sales_register')}.id as id, map, code, {$this->db->dbprefix('sales_register')}.name as name, {$this->db->dbprefix('price_groups')}.name as price_group, phone, email, address")
+            ->from('sales_register')            
+            ->add_column('Actions', "<div class=\"text-center\"><a href='" . admin_url('system_settings/edit_warehouse/$1') . "' class='tip' title='" . lang('edit_warehouse') . "' data-toggle='modal' data-target='#myModal'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang('delete_warehouse') . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('system_settings/delete_warehouse/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", 'id');
+
+        echo $this->datatables->generate();
+    }
+
     public function group_product_prices($group_id = null)
     {
         if (!$group_id) {
@@ -2606,11 +2617,12 @@ class system_settings extends MY_Controller
                 $data['smtp_pass'] = $this->input->post('smtp_pass');
             }
         }
+        /*
         if(!$this->settings_model->updateSetting($data)){
             echo 1;
             exit();
         }
-
+*/
         if ($this->form_validation->run() == true && $this->settings_model->updateSetting($data)) {
             
             if (!DEMO && TIMEZONE != $data['timezone']) {

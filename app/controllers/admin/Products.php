@@ -76,11 +76,11 @@ class Products extends MY_Controller
                 'supplier4price'    => $this->sma->formatDecimal($this->input->post('supplier_4_price')),
                 'supplier5'         => $this->input->post('supplier_5'),
                 'supplier5price'    => $this->sma->formatDecimal($this->input->post('supplier_5_price')),
-                'cf1'               => $this->input->post('cf1'),
-                'cf2'               => $this->input->post('cf2'),
-                'cf3'               => $this->input->post('cf3'),
-                'cf4'               => $this->input->post('cf4'),
-                'cf5'               => $this->input->post('cf5'),
+                'ukuran'            => $this->input->post('ukuran'),
+                'isi'               => $this->input->post('isi'),
+                'kelas_barang'      => $this->input->post('kelas_barang'),
+                'n'                 => $this->input->post('n'),
+                'harga_cv'          => $this->sma->formatDecimal($this->input->post('harga_cv')),
                 'cf6'               => $this->input->post('cf6'),
                 'promotion'         => $this->input->post('promotion'),
                 'promo_price'       => $this->sma->formatDecimal($this->input->post('promo_price')),
@@ -1618,7 +1618,7 @@ class Products extends MY_Controller
     }
 
     /* ---------------------------------------------------------------- */
-
+    /*
     public function import_csv()
     {
         $this->sma->checkPermissions('csv');
@@ -1810,7 +1810,129 @@ class Products extends MY_Controller
             $this->page_construct('products/import_csv', $meta, $this->data);
         }
     }
+*/
+    public function import_csv()
+    {
+        $this->sma->checkPermissions('csv');
+        $this->load->helper('security');
+        $this->form_validation->set_rules('userfile', lang('upload_file'), 'xss_clean');
 
+        if ($this->form_validation->run() == true) {
+            if (isset($_FILES['userfile'])) {
+                $this->load->library('upload');
+                $config['upload_path'] = $this->digital_upload_path;
+                $config['allowed_types'] = 'csv';
+                $config['max_size'] = $this->allowed_file_size;
+                $config['overwrite'] = true;
+                $config['encrypt_name'] = true;
+                $config['max_filename'] = 25;
+                $this->upload->initialize($config);
+
+                if (!$this->upload->do_upload()) {
+                    $error = $this->upload->display_errors();
+                    $this->session->set_flashdata('error', $error);
+                    admin_redirect('products/import_csv');
+                }
+
+                $csv = $this->upload->file_name;
+                $arrResult = [];
+                $handle = fopen($this->digital_upload_path . $csv, 'r');
+                if ($handle) {
+                    while (($row = fgetcsv($handle, 5000, ',')) !== false) {
+                        $arrResult[] = $row;
+                    }
+                    fclose($handle);
+                }
+
+                $arr_length = count($arrResult);
+                if ($arr_length > 999) {
+                    $this->session->set_flashdata('error', lang('too_many_products'));
+                    redirect($_SERVER['HTTP_REFERER']);
+                    exit();
+                }
+
+                $titles = array_shift($arrResult);
+                $updated = 0;
+                $items = [];
+                foreach ($arrResult as $key => $value) {                   
+
+                    $item = [
+                        'code'              => isset($value[0]) ? trim($value[0]) : '',
+                        'name'              => isset($value[1]) ? trim($value[1]) : '',
+                        'second_name'       => isset($value[2]) ? trim($value[2]) : '',  // Item -> second_name
+                        'ukuran'            => isset($value[3]) ? trim($value[3]) : '',  // Uk -> cf1
+                        'isi'               => isset($value[4]) ? trim($value[4]) : '',  // Isi -> cf2
+                        'kelas_barang'      => isset($value[5]) ? trim($value[5]) : '',  // Kelas Barang -> cf3
+                        'n'                 => isset($value[6]) ? trim($value[6]) : '',  // N -> cf4
+                        'category_name'     => isset($value[7]) ? trim($value[7]) : '',
+                        'subcategory_name'  => isset($value[8]) ? trim($value[8]) : '',
+                        'cost'              => isset($value[9]) ? trim($value[9]) : 0,
+                        'harga_cv'          => isset($value[10]) ? trim($value[10]) : 0,
+                        'price'             => isset($value[11]) ? trim($value[11]) : 0,   
+                        'unit'              => 1,                         
+                        'slug'              => $this->Settings->use_code_for_slug ? $this->sma->slug($value[1]) : $this->sma->slug($value[1]),
+                        'barcode_symbology' => 'code128',
+                        'warehouse'=> 1,
+                        'business_location'=> 1,
+                        'alert_quantity' => 10
+                    ];
+
+                    $cat_id = $this->products_model->getCategoryIDByName($item['category_name']);                    
+                    $subcat_id = $this->products_model->getCategoryIDByName($item['subcategory_name']);
+
+                    if ($cat_id) {
+                        unset($item['category_name'], $item['subcategory_name']);
+                        $item['category_id'] = $cat_id;
+                        $item['subcategory_id'] = $subcat_id ? $subcat_id : null;
+    
+                        if ($product = $this->products_model->getProductByCode($item['code'])) {
+                            
+                            if ($this->products_model->updateProduct($product->id, $item, null, null, null, null, null, null)) {
+                                $updated++;
+                            }                              
+                            $item = false;
+                        }
+                    } else {
+                        $this->session->set_flashdata('error', lang('check_category_name') . ' (' . $item['category_name'] . '). ' . lang('category_name_x_exist') . ' ' . lang('line_no') . ' ' . ($key + 1));
+                        admin_redirect('products/import_csv');
+                    }
+
+                    if ($item) {
+                        $items[] = $item;
+                    }
+                }
+            }
+        }
+
+        if ($this->form_validation->run() == true && !empty($items)) {
+            if ($this->products_model->add_products($items)) {
+                $updated = $updated ? '<p>' . sprintf(lang('products_updated'), $updated) . '</p>' : '';
+                $this->session->set_flashdata('message', sprintf(lang('products_added'), count($items)) . $updated);
+                admin_redirect('products');
+            }
+        } else {
+            if (isset($items) && empty($items)) {
+                if ($updated) {
+                    $this->session->set_flashdata('message', sprintf(lang('products_updated'), $updated));
+                    admin_redirect('products');
+                } else {
+                    $this->session->set_flashdata('warning', lang('csv_issue'));
+                }
+                admin_redirect('products/import_csv');
+            }
+
+            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+            $this->data['userfile'] = ['name' => 'userfile',
+                'id'                          => 'userfile',
+                'type'                        => 'text',
+                'value'                       => $this->form_validation->set_value('userfile'),
+            ];
+
+            $bc = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('products'), 'page' => lang('products')], ['link' => '#', 'page' => lang('import_products_by_csv')]];
+            $meta = ['page_title' => lang('import_products_by_csv'), 'bc' => $bc];
+            $this->page_construct('products/import_csv', $meta, $this->data);
+        }
+    }
     public function index($warehouse_id = null)
     {
         $this->sma->checkPermissions();
