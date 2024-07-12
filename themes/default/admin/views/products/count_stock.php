@@ -2,7 +2,7 @@
 
 <div class="box">
     <div class="box-header">
-        <h2 class="blue"><i class="fa-fw fa fa-plus"></i><?= lang('count_stock'); ?></h2>
+        <h2 class="blue"><i class="fa-fw fa fa-plus"></i><?= lang('count_stock'); ?></h2><a target="_blank" href="<?= base_url('admin/products/stock_counts_print') ?>" class="btn btn-info pull-right" style="margin-top: 2px;"><i class="fa fa-print"></i> Rekap Stock Barang</a>
     </div>
     <div class="box-content">
         <div class="row">
@@ -116,9 +116,10 @@
                         <div class="clearfix"></div>
 
                         <div class="col-md-12">
-                            <div class="fprom-group">
+                            <div class="form-group">
                                 <?= form_submit('count_stock', lang('submit'), 'id="count_stock" class="btn btn-primary" style="padding: 6px 15px; margin:15px 0;"'); ?>
-                                <button type="button" class="btn btn-danger" id="reset"><?= lang('reset') ?></div>
+                                <button type="button" class="btn btn-danger" id="reset"><?= lang('reset') ?></button>
+                            </div>
                         </div>
                     </div>
                 </div>
