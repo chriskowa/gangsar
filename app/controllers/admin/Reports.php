@@ -26,6 +26,8 @@ class Reports extends MY_Controller
             'deposit'    => lang('deposit'),
             'authorize'  => lang('authorize'),
         ];
+
+        $this->load->helper('pos');
     }
 
     public function adjustments($warehouse_id = null)
@@ -3128,5 +3130,10 @@ class Reports extends MY_Controller
         $bc = [['link' => base_url(), 'page' => lang('home')], ['link' => '#', 'page' => lang('reports')]];
         $meta = ['page_title' => lang('reports'), 'bc' => $bc];
         $this->page_construct('reports/warehouse_stock', $meta, $this->data);
+    }
+
+    public function company_model_report()
+    {
+        $this->load->view($this->theme . 'reports/company_model_report');
     }
 }

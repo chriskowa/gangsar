@@ -50,7 +50,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <p class="introtext"><?= lang('reports_calendar_text') ?></p>
-
+                <p>
+                    <a href="<?= base_url('company-model-report') ?>" target="_blank" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Company Report Monel</a>
+                </p>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped dfTable reports-table">
                         <thead>
