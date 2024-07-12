@@ -43,10 +43,14 @@
                                     <div class="col-md-12">
                                         <div class="col-md-5">
                                             <div class="form-group">
-                                                <?php echo lang('first_name', 'first_name'); ?>
-                                                <div class="controls">
-                                                    <?php echo form_input('first_name', $user->first_name, 'class="form-control" id="first_name" required="required"'); ?>
-                                                </div>
+                                              <?php echo lang('user_code', 'user_code'); ?>
+                                              <input maxlength="2" class="form-control" name="user_code" id="user_code" value="<?= $user->user_code ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                              <?php echo lang('first_name', 'first_name'); ?>
+                                              <div class="controls">
+                                                <?php echo form_input('first_name', $user->first_name, 'class="form-control" id="first_name" required="required"'); ?>
+                                              </div>
                                             </div>
 
                                             <div class="form-group">

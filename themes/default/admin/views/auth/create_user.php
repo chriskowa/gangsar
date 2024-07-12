@@ -99,6 +99,10 @@
                                 echo form_dropdown('group', $gp, ($_POST['group'] ?? ''), 'id="group" required="required" class="form-control select" style="width:100%;"');
                                 ?>
                             </div>
+                            <div class="form-group">
+                              <?= lang('user_code', 'user_code'); ?>
+                              <input maxlength="2" class="form-control" name="user_code" id="user_code" value="<?= ($_POST['user_code'] ?? '') ?>" required>
+                            </div>
 
                             <div class="clearfix"></div>
                             <div class="no">
