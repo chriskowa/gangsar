@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    // $('#pbusiness_location').select2();
     $('body a, body button').attr('tabindex', -1);
     check_add_item_val();
     if (site.settings.set_focus != 1) {
@@ -283,6 +284,7 @@ $(document).ready(function () {
         var row_id = row.attr('id');
         item_id = row.attr('data-item-id');
         item = poitems[item_id];
+        console.log(item)
         var qty = row.children().children('.rquantity').val(),
             product_option = row.children().children('.roption').val(),
             unit_cost = formatDecimal(row.children().children('.rucost').val()),
@@ -360,19 +362,27 @@ $(document).ready(function () {
                 $('<option />', { value: this.id, text: this.name }).appendTo(uopt);
             }
         });
-
+        business_location = item.row.business_location;
+        size = item.row.size;
         $('#poptions-div').html(opt);
         $('#punits-div').html(uopt);
         $('select.select').select2({ minimumResultsForSearch: 7 });
         $('#pquantity').val(qty);
         $('#old_qty').val(qty);
         $('#pcost').val(unit_cost);
-        $('#pprice').val(unit_price);
+        // $('#pprice').val(unit_price);
+        $('#potherPrice').val(item.row.potherPrice);
+        $('#pprice').val(item.row.pprice);
         $('#punit_cost').val(formatDecimal(parseFloat(unit_cost) + parseFloat(pr_tax_val)));
         $('#poption').select2('val', item.row.option);
         $('#old_cost').val(unit_cost);
         $('#row_id').val(row_id);
         $('#item_id').val(item_id);
+        $('#pbusiness_location').val(business_location);
+        // alert(business_location)
+        // if (!$('#pbusiness_location').data('select2'))
+        $('#pbusiness_location').select2('val',business_location);
+        $('#psize').val(size);
         $('#pexpiry').val(row.children().children('.rexpiry').val());
         $('#pdiscount').val(discount);
         $('#net_cost').text(formatMoney(net_cost));
@@ -506,13 +516,17 @@ $(document).ready(function () {
         }
 
         var business_location = $('#pbusiness_location').val();
+        var size = $('#psize').val();
 
         (poitems[item_id].row.fup = 1),
             (poitems[item_id].row.qty = parseFloat($('#pquantity').val())),
             (poitems[item_id].row.base_quantity = parseFloat(base_quantity)),
             (poitems[item_id].row.unit = unit),
             (poitems[item_id].row.business_location = business_location),
+            (poitems[item_id].row.size = size),
             (poitems[item_id].row.real_unit_cost = parseFloat($('#pcost').val())),
+            (poitems[item_id].row.potherPrice = parseFloat($('#potherPrice').val())),
+            (poitems[item_id].row.pprice = parseFloat($('#pprice').val())),
             (poitems[item_id].row.tax_rate = new_pr_tax),
             (poitems[item_id].tax_rate = new_pr_tax_rate),
             (poitems[item_id].row.discount = $('#pdiscount').val() ? $('#pdiscount').val() : '0'),
@@ -683,8 +697,10 @@ function loadItems() {
                 item_type = item.row.type,
                 combo_items = item.combo_items,
                 item_cost = item.row.cost,
-                item_price = item.row.price,
+                item_price = item.row.pprice,
+                item_harga_cv = item.row.potherPrice,
                 item_business_location = item.row.business_location,
+                item_size = item.row.size,
                 item_oqty = item.row.oqty,
                 item_qty = item.row.qty,
                 item_bqty = item.row.quantity_balance,
@@ -800,6 +816,8 @@ function loadItems() {
                 unit_cost +
                 '"><input class="ruprice" name="unit_price[]" type="hidden" value="' +
                 item_price +
+                '"><input class="ruprice" name="item_harga_cv[]" type="hidden" value="' +
+                item_harga_cv +
                 '"><input class="realucost" name="real_unit_cost[]" type="hidden" value="' +
                 item.row.real_unit_cost +
                 '"><span class="text-right scost" id="scost_' +
@@ -826,6 +844,8 @@ function loadItems() {
                 item_business_location +
                 '"><input name="product_base_quantity[]" type="hidden" class="rbase_quantity" value="' +
                 base_quantity +
+                '"><input name="size_input[]" type="hidden" value="' +
+                item_size +
                 '"></td>';
             if (po_edit) {
                 tr_html +=

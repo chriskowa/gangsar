@@ -423,16 +423,15 @@
                         <div class="form-group">
                             <label class="col-sm-4 control-label"><?= lang('product_tax') ?></label>
                             <div class="col-sm-8">
-                                <?php
-                                $tr[''] = '';
-                                                foreach ($tax_rates as $tax) {
-                                                    $tr[$tax->id] = $tax->name;
-                                                }
-                                                echo form_dropdown('ptax', $tr, '', 'id="ptax" class="form-control pos-input-tip" style="width:100%;"'); ?>
+                              <?php
+                              $tr[''] = '';
+                              foreach ($tax_rates as $tax) {
+                                  $tr[$tax->id] = $tax->name;
+                              }
+                              echo form_dropdown('ptax', $tr, '', 'id="ptax" class="form-control pos-input-tip" style="width:100%;"'); ?>
                             </div>
                         </div>
-                    <?php
-                                            } ?>
+                    <?php } ?>
                     <div class="form-group">
                         <label for="pquantity" class="col-sm-4 control-label"><?= lang('quantity') ?></label>
 
@@ -440,17 +439,33 @@
                             <input type="text" class="form-control" id="pquantity">
                         </div>
                     </div>
-                    <?php if ($Settings->product_expiry) {
-                                                ?>
-                        <div class="form-group">
-                            <label for="pexpiry" class="col-sm-4 control-label"><?= lang('product_expiry') ?></label>
+                    <div class="form-group">
+                      <label class="col-sm-4 control-label"><?= ucwords(lang('business_location')) ?></label>
+                      <div class="col-sm-8">
+                          <?php
+                          $bl[''] = '';                                
+                          foreach ($business_locations as $business_location) {
+                              $bl[$business_location->id] = $business_location->name;
+                          }
+                          echo form_dropdown('business_location', $bl, '', 'class="form-control" id="pbusiness_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"');
+                          ?>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-4 control-label"><?= ucwords(lang('size')) ?></label>
+                      <div class="col-sm-8">
+                          <input type="number" min="1" class="form-control" id="psize">
+                      </div>
+                    </div>
+                    <?php if ($Settings->product_expiry) { ?>
+                    <div class="form-group">
+                        <label for="pexpiry" class="col-sm-4 control-label"><?= lang('product_expiry') ?></label>
 
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control date" id="pexpiry">
-                            </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control date" id="pexpiry">
                         </div>
-                    <?php
-                                            } ?>
+                    </div>
+                    <?php } ?>
                     <div class="form-group">
                         <label for="punit" class="col-sm-4 control-label"><?= lang('product_unit') ?></label>
                         <div class="col-sm-8">
@@ -463,23 +478,33 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
-                    <?php if ($Settings->product_discount) {
-                                                ?>
+                    <?php if ($Settings->product_discount) { ?>
                         <div class="form-group">
-                            <label for="pdiscount"
-                                   class="col-sm-4 control-label"><?= lang('product_discount') ?></label>
+                          <label for="pdiscount"
+                                 class="col-sm-4 control-label"><?= lang('product_discount') ?></label>
 
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="pdiscount">
-                            </div>
-                        </div>
-                    <?php
-                                            } ?>
+                          <div class="col-sm-8">
+                              <input type="text" class="form-control" id="pdiscount">
+                          </div>
+                      </div>
+                    <?php } ?>
                     <div class="form-group">
                         <label for="pcost" class="col-sm-4 control-label"><?= lang('unit_cost') ?></label>
 
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="pcost">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="potherPrice" class="col-sm-4 control-label">Harga CV</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="potherPrice">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pprice" class="col-sm-4 control-label">Harga</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="pprice">
                         </div>
                     </div>
                     <table class="table table-bordered table-striped">

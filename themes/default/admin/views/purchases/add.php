@@ -553,12 +553,20 @@
                     <div class="form-group">
                             <label class="col-sm-4 control-label"><?= lang('business_location') ?></label>
                             <div class="col-sm-8">
+
                                 <?php
                                 $bl[''] = '';                                
                                 foreach ($business_locations as $business_location) {
                                     $bl[$business_location->id] = $business_location->name;
                                 }
-                                echo form_dropdown('business_location', $bl,'', 'id="pbusiness_location" class="form-control input-tip select" data-placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%;" '); ?>
+                                echo form_dropdown('business_location', $bl, '', 'class="form-control" id="pbusiness_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"');
+                                ?>
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-sm-4 control-label"><?= ucwords(lang('size')) ?></label>
+                            <div class="col-sm-8">
+                                <input class="form-control" id="psize">
                             </div>
                         </div>
                     <?php if ($Settings->product_discount) {
