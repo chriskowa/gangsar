@@ -865,11 +865,11 @@ class Transfers extends MY_Controller
                 }
 
                 $rw = 2;
-                echo "<pre>";
-                print_r($arrResult);
-                print_r($titles);
-                print_r($keys);
-                print_r($final);
+                // echo "<pre>";
+                // print_r($arrResult);
+                // print_r($titles);
+                // print_r($keys);
+                // print_r($final);
                 // exit;
                 foreach ($final as $csv_pr) {
                     $item_code     = $csv_pr['product'];
