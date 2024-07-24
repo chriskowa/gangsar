@@ -290,7 +290,19 @@
                                         <input class="form-control" id="ref_city" name="code1" readonly>
                                     </div>
                                     <div class="col-md-4">
-                                        <input class="form-control" id="ref_uname" name="code2" readonly value="<?= $userLogin->user_code ?>">
+                                      <select class="form-control" name="code2" id="ref_uname">
+                                        <?php 
+                                          $userCode = $this->db->get('users')->result();
+
+                                          foreach ($userCode as $code):
+
+                                            $user_code = $code->user_code ? $code->user_code : 'Code Belum Diisi';
+
+                                            $selected = $userLogin->user_code == $code->user_code ? "selected=''":"";
+                                        ?>
+                                        <option <?= $selected ?> value="<?= $code->user_code ?>">(<?= $user_code ?>) <?= $code->first_name.' '.$code->last_name ?></option>
+                                        <?php endforeach;?>
+                                      </select>
                                     </div>
                                     <div class="col-md-4">
                                         <input class="form-control" id="ref_company" name="code3" readonly>

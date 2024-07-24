@@ -34,13 +34,31 @@
         if (slbiller = localStorage.getItem('slbiller')) {
             $('#slbiller').val(slbiller);
         }
-        <?php
-} ?>
+        <?php } ?>
         if (!localStorage.getItem('slref')) {
             localStorage.setItem('slref', '<?=$slnumber?>');
         }
 
+        $("#pbusiness_location").change(function(){
+            v = $(this).val();
+            vsplit = v.split('-');
+            vcode = vsplit[1];
+            $("#ref_company").val(vcode)
+        })
+        $("#pbusiness_location").change();
     });
+
+  var jsonWarehouses = <?= json_encode($warehouses) ?>;
+
+  $(document).on('change', '#slwarehouse', function (e) {
+      var thisVal = $(this).val();
+      $.each(jsonWarehouses, function(i, item) {
+          var whId = item.id;
+          if(whId == thisVal){
+              $("#ref_city").val(item.code)
+          }
+      });
+  });
 </script>
 
 
@@ -74,13 +92,37 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <?= lang('reference_no', 'slref'); ?>
-                                <?php echo form_input('reference_no', ($_POST['reference_no'] ?? $slnumber), 'class="form-control input-tip" id="slref"'); ?>
+                                <?php echo form_input('reference_no', ($_POST['reference_no'] ?? $slnumber), 'class="form-control input-tip hidden" id="slref"'); ?>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input class="form-control" id="ref_city" name="code1" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <select class="form-control" name="code2" id="ref_uname">
+                                        <?php 
+                                          $userCode = $this->db->get('users')->result();
+
+                                          foreach ($userCode as $code):
+
+                                            $user_code = $code->user_code ? $code->user_code : 'Code Belum Diisi';
+
+                                            $selected = $userLogin->user_code == $code->user_code ? "selected=''":"";
+                                        ?>
+                                        <option <?= $selected ?> value="<?= $code->user_code ?>">(<?= $user_code ?>) <?= $code->first_name.' '.$code->last_name ?></option>
+                                        <?php endforeach;?>
+                                      </select>
+                                        <!-- <input class="form-control" id="ref_uname" name="code2" readonly value="<?= $userLogin->user_code ?>"> -->
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input class="form-control" id="ref_company" name="code3" readonly>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <?php if (!$Settings->restrict_user || $Owner || $Admin) {
                     ?>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group" style="display: none;">
                                     <?= lang('biller', 'slbiller'); ?>
                                     <?php
                                     $bl[''] = '';
@@ -101,8 +143,8 @@
 
                     echo form_input($biller_input);
                 } ?>
-
-
+                    </div>
+                    <div class="col-lg-12">
                                     <?php if (!$Settings->restrict_user || $Owner || $Admin) {
                     ?>
                                         <div class="col-md-4">
@@ -139,6 +181,18 @@
                                                         class="external" data-toggle="modal" data-target="#myModal"><i
                                                             class="fa fa-2x fa-plus-circle" id="addIcon"></i></a></div>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <?= lang('business_location', 'pbusiness_location') ?>
+                                            <?php
+                                            echo "<select class='form-control' id='pbusiness_location'>";
+                                            foreach ($business_locations as $business_location) {
+                                                echo "<option value='$business_location->id-$business_location->code'>$business_location->name</option>";
+                                            }
+                                            echo "</select>";
+                                            ?>
                                         </div>
                                     </div>
 
@@ -234,8 +288,8 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <?= lang('payment_reference_no', 'payment_reference_no'); ?>
-                                                    <?= form_input('payment_reference_no', ($_POST['payment_reference_no'] ?? $payment_ref), 'class="form-control tip" id="payment_reference_no" required="required"'); ?>
+                                                  <?= lang('payment_reference_no', 'payment_reference_no'); ?>
+                                                  <?= form_input('payment_reference_no', ($_POST['payment_reference_no'] ?? @$payment_ref), 'class="form-control tip" id="payment_reference_no" required="required"'); ?>
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">

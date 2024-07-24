@@ -2108,6 +2108,10 @@ class Sales extends MY_Controller
         $this->form_validation->set_rules('biller', lang('biller'), 'required');
         $this->form_validation->set_rules('sale_status', lang('sale_status'), 'required');
         $this->form_validation->set_rules('payment_status', lang('payment_status'), 'required');
+        
+        $userLogin = $this->db->where(['username'=>$_SESSION['username']])->get('users')->row();
+        $this->data['userLogin'] = $userLogin;
+        $this->data['warehouses'] = $this->site->getAllWarehouses();
 
         if ($this->form_validation->run() == true) {
             $reference = $this->input->post('reference_no') ? $this->input->post('reference_no') : $this->site->getReference('so');
@@ -2116,6 +2120,13 @@ class Sales extends MY_Controller
             } else {
                 $date = date('Y-m-d H:i:s');
             }
+            
+            $nextAi           = $this->db->order_by('id','desc')->get('sales')->row();
+            $code1            = $this->input->post('code1');
+            $code2            = $this->input->post('code2');
+            $code3            = $this->input->post('code3');
+            $reference        = "$code1-$code2-$code3-$nextAi->id";
+
             $warehouse_id     = $this->input->post('warehouse');
             $customer_id      = $this->input->post('customer');
             $biller_id        = $this->input->post('biller');
@@ -2338,6 +2349,7 @@ class Sales extends MY_Controller
             $this->data['tax_rates']  = $this->site->getAllTaxRates();
             $this->data['billers']    = $this->site->getAllCompanies('biller');
             $this->data['slnumber']   = $this->site->getReference('so');
+            $this->data['business_locations'] = $this->site->getAllBusiness_location();
 
             $bc   = [['link' => base_url(), 'page' => lang('home')], ['link' => admin_url('sales'), 'page' => lang('sales')], ['link' => '#', 'page' => lang('add_sale_by_csv')]];
             $meta = ['page_title' => lang('add_sale_by_csv'), 'bc' => $bc];
