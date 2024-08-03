@@ -8,6 +8,55 @@
         var jsonWarehouses = <?= json_encode($warehouses) ?>;
         var jsonBillers = <?= json_encode($billers) ?>;
     $(document).ready(function () {
+        
+        function calculateDiscounts() {
+            console.log(total);
+            var initialAmount = total; // Ubah sesuai kebutuhan
+            var orderDiscount = parseFloat($('#sldiscount').val()) || 0;
+            var discount1 = parseFloat($('#sldiscount1').val()) || 0;
+            var discount2 = parseFloat($('#sldiscount2').val()) || 0;
+            var discount3 = parseFloat($('#sldiscount3').val()) || 0;
+
+            // Hitung diskon bertingkat
+            var discountedAmount = initialAmount * (1 - (discount1 / 100));
+            discountedAmount = discountedAmount * (1 - (discount2 / 100));
+            discountedAmount = discountedAmount * (1 - (discount3 / 100));
+
+            // Update order_discount
+            var finalOrderDiscount = ((initialAmount - discountedAmount) / initialAmount) * 100;
+            $('#sldiscount').val(finalOrderDiscount + '%');
+            $('#sldiscount').change();
+        }
+
+        function updateDiscounts() {
+            console.log(total);
+            var initialAmount = total; // Ubah sesuai kebutuhan
+            var orderDiscount = parseFloat($('#sldiscount').val()) || 0;
+
+            // Hitung diskon 1, 2, dan 3 dari order_discount
+            var discountedAmount = initialAmount * (1 - (orderDiscount / 100));
+
+            var discount1 = (1 - (discountedAmount / initialAmount)) * 100;
+            discountedAmount = discountedAmount * (1 - (discount1 / 100));
+            var discount2 = (1 - (discountedAmount / initialAmount)) * 100;
+            discountedAmount = discountedAmount * (1 - (discount2 / 100));
+            var discount3 = (1 - (discountedAmount / initialAmount)) * 100;
+
+            // Update discount1, discount2, discount3
+            $('#sldiscount1').val(discount1.toFixed(2));
+            $('#sldiscount2').val(discount2.toFixed(2));
+            $('#sldiscount3').val(discount3.toFixed(2));
+        }
+
+        $('#sldiscount1, #sldiscount2, #sldiscount3').on('input', function() {
+            calculateDiscounts();
+        });
+
+        $('#sldiscount').on('input', function() {
+            //updateDiscounts();
+        });
+
+    
         if (localStorage.getItem('remove_slls')) {
             if (localStorage.getItem('slitems')) {
                 localStorage.removeItem('slitems');
@@ -510,6 +559,20 @@
                                 <div class="form-group">
                                     <?= lang('order_discount', 'sldiscount'); ?>
                                     <?php echo form_input('order_discount', '', 'class="form-control input-tip" id="sldiscount"'); ?>
+                                </div>
+                                <div class="form-group">
+                                    <?= lang('discount1', 'sldiscount1'); ?>
+                                    <?php echo form_input('discount1', '', 'class="form-control input-tip" id="sldiscount1"'); ?>
+                                </div>
+
+                                <div class="form-group">
+                                    <?= lang('discount2', 'sldiscount2'); ?>
+                                    <?php echo form_input('discount2', '', 'class="form-control input-tip" id="sldiscount2"'); ?>
+                                </div>
+
+                                <div class="form-group">
+                                    <?= lang('discount3', 'sldiscount3'); ?>
+                                    <?php echo form_input('discount3', '', 'class="form-control input-tip" id="sldiscount3"'); ?>
                                 </div>
                             </div>
                         <?php
