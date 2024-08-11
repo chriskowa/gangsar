@@ -725,14 +725,11 @@ class Purchases extends MY_Controller
             $data['attachment'] = !empty($attachments) ? 1 : null;
             // $this->sma->print_arrays($data, $products);
         }
-        echo "<pre>";
-        print_r($_POST);
-        exit;
 
         if ($this->form_validation->run() == true && $this->purchases_model->updatePurchase($id, $data, $products, $attachments)) {
             $this->session->set_userdata('remove_pols', 1);
             $this->session->set_flashdata('message', $this->lang->line('purchase_added'));
-            // admin_redirect('purchases');
+            admin_redirect('purchases');
         } else {
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['inv']   = $inv;
