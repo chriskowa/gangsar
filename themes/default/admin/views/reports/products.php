@@ -348,7 +348,7 @@ if ($this->input->post('cf6')) {
                 </div>
 
                 <div class="clearfix"></div>
-
+                <a target="_blank" href="<?= base_url('company-stock-report') ?>" class="btn btn-sm btn-info">Company Stock Report</a>
                 <div class="table-responsive">
                     <table id="PrRData"
                            class="table table-striped table-bordered table-condensed table-hover dfTable reports-table"
