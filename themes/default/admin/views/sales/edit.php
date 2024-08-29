@@ -367,17 +367,17 @@ $allow_discount = ($Owner || $Admin || $this->session->userdata('allow_discount'
                             </div>
                             <div class="form-group">
                                 <?= lang('discount1', 'sldiscount1'); ?>
-                                <?php echo form_input('discount1', '', 'class="form-control input-tip" id="sldiscount1"'); ?>
+                                <?php echo form_input('discount1', $inv->discount1, 'class="form-control input-tip" id="sldiscount1"'); ?>
                             </div>
 
                             <div class="form-group">
                                 <?= lang('discount2', 'sldiscount2'); ?>
-                                <?php echo form_input('discount2', '', 'class="form-control input-tip" id="sldiscount2"'); ?>
+                                <?php echo form_input('discount2', $inv->discount2, 'class="form-control input-tip" id="sldiscount2"'); ?>
                             </div>
 
                             <div class="form-group">
                                 <?= lang('discount3', 'sldiscount3'); ?>
-                                <?php echo form_input('discount3', '', 'class="form-control input-tip" id="sldiscount3"'); ?>
+                                <?php echo form_input('discount3', $inv->discount3, 'class="form-control input-tip" id="sldiscount3"'); ?>
                             </div>
                         </div>
                         <?php

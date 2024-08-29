@@ -1203,4 +1203,122 @@ class Products_model extends CI_Model
         }
         return false;
     }
+
+    public function updateProductAwal($id, $data, $items, $warehouse_qty, $product_attributes, $photos, $update_variants, $business_locations)
+    {        
+        if ($this->db->update('products', $data, ['id' => $id])) {            
+            if ($items) {
+                $this->db->delete('combo_items', ['product_id' => $id]);
+                foreach ($items as $item) {
+                    $item['product_id'] = $id;
+                    $this->db->insert('combo_items', $item);
+                }
+            }
+
+            $tax_rate = $this->site->getTaxRateByID($data['tax_rate']);
+
+            if ($warehouse_qty && !empty($warehouse_qty)) {
+                foreach ($warehouse_qty as $wh_qty) {
+                    $this->db->update('warehouses_products', ['rack' => $wh_qty['rack']], ['product_id' => $id, 'warehouse_id' => $wh_qty['warehouse_id']]);
+                }
+            }
+
+            if (!empty($business_locations)) {
+                $product_id = $id;
+                // First, delete existing entries for this product
+                $this->deleteProductBusinessLocations($product_id);
+
+                // Then, insert new entries
+                foreach ($business_locations as $location_id) {
+                    $price = $this->input->post('price_' . $location_id);
+                    $this->addProductToBusinessLocation($product_id, $location_id, $price);
+                }
+            }
+
+            if (!empty($update_variants)) {
+                foreach ($update_variants as $variant) {
+                    $vr = $this->getProductVariantByName($id, $variant['name']);
+                    if ($vr) {
+                        $this->db->update('product_variants', $variant, ['id' => $vr->id]);
+                    } else {
+                        if ($variant['id']) {
+                            $this->db->delete('product_variants', ['id' => $variant['id']]);
+                        } else {
+                            $this->db->insert('product_variants', $variant);
+                        }
+                    }
+                }
+            }
+
+            if ($photos) {
+                foreach ($photos as $photo) {
+                    $this->db->insert('product_photos', ['product_id' => $id, 'photo' => $photo]);
+                }
+            }
+
+            if ($product_attributes) {
+                foreach ($product_attributes as $pr_attr) {
+                    $pr_attr['product_id'] = $id;
+                    $variant_warehouse_id  = $pr_attr['warehouse_id'];
+                    unset($pr_attr['warehouse_id']);
+                    $this->db->insert('product_variants', $pr_attr);
+                    $option_id = $this->db->insert_id();
+
+                    if ($pr_attr['quantity'] != 0) {
+                        $this->db->insert('warehouses_products_variants', ['option_id' => $option_id, 'product_id' => $id, 'warehouse_id' => $variant_warehouse_id, 'quantity' => $pr_attr['quantity']]);
+
+                        $tax_rate_id = $tax_rate ? $tax_rate->id : null;
+                        $tax         = $tax_rate ? (($tax_rate->type == 1) ? $tax_rate->rate . '%' : $tax_rate->rate) : null;
+                        $unit_cost   = $data['cost'];
+                        if ($tax_rate) {
+                            if ($tax_rate->type == 1 && $tax_rate->rate != 0) {
+                                if ($data['tax_method'] == '0') {
+                                    $pr_tax_val    = ($data['cost'] * $tax_rate->rate) / (100 + $tax_rate->rate);
+                                    $net_item_cost = $data['cost'] - $pr_tax_val;
+                                    $item_tax      = $pr_tax_val * $pr_attr['quantity'];
+                                } else {
+                                    $net_item_cost = $data['cost'];
+                                    $pr_tax_val    = ($data['cost'] * $tax_rate->rate) / 100;
+                                    $unit_cost     = $data['cost'] + $pr_tax_val;
+                                    $item_tax      = $pr_tax_val * $pr_attr['quantity'];
+                                }
+                            } else {
+                                $net_item_cost = $data['cost'];
+                                $item_tax      = $tax_rate->rate;
+                            }
+                        } else {
+                            $net_item_cost = $data['cost'];
+                            $item_tax      = 0;
+                        }
+
+                        $subtotal = (($net_item_cost * $pr_attr['quantity']) + $item_tax);
+                        $item     = [
+                            'product_id'        => $id,
+                            'product_code'      => $data['code'],
+                            'product_name'      => $data['name'],
+                            'net_unit_cost'     => $net_item_cost,
+                            'unit_cost'         => $unit_cost,
+                            'quantity'          => $pr_attr['quantity'],
+                            'option_id'         => $option_id,
+                            'quantity_balance'  => $pr_attr['quantity'],
+                            'quantity_received' => $pr_attr['quantity'],
+                            'item_tax'          => $item_tax,
+                            'tax_rate_id'       => $tax_rate_id,
+                            'tax'               => $tax,
+                            'subtotal'          => $subtotal,
+                            'warehouse_id'      => $variant_warehouse_id,
+                            'date'              => date('Y-m-d'),
+                            'status'            => 'received',
+                        ];
+                        $item['option_id'] = !empty($item['option_id']) && is_numeric($item['option_id']) ? $item['option_id'] : null;
+                        $this->db->insert('purchase_items', $item);
+                    }
+                }
+            }
+
+            
+            return true;
+        }
+        return false;
+    }
 }

@@ -890,7 +890,7 @@ class Sales_model extends CI_Model
         }
         $this->db->trans_complete();
         if ($this->db->trans_status() === false) {
-            log_message('error', 'An errors has been occurred while adding the sale (Update:Sales_model.php)');
+            log_message('error', 'An errors has been occurred while adding the sale (Update:Sales_model.php)'); 
         } else {
             return true;
         }

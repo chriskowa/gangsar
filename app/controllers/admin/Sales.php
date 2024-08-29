@@ -83,6 +83,10 @@ class Sales extends MY_Controller
             $staff_note       = $this->sma->clear_tags($this->input->post('staff_note'));
             $quote_id         = $this->input->post('quote_id') ? $this->input->post('quote_id') : null;
 
+            $discount1        = $this->input->post('discount1');
+            $discount2        = $this->input->post('discount2');
+            $discount3        = $this->input->post('discount3');
+
             $total            = 0;
             $product_tax      = 0;
             $product_discount = 0;
@@ -192,6 +196,9 @@ class Sales extends MY_Controller
                 'order_discount_id' => $this->input->post('order_discount'),
                 'order_discount'    => $order_discount,
                 'total_discount'    => $total_discount,
+                'discount1'         => $discount1,
+                'discount2'         => $discount2,
+                'discount3'         => $discount3,
                 'product_tax'       => $product_tax,
                 'order_tax_id'      => $this->input->post('order_tax'),
                 'order_tax'         => $order_tax,
@@ -837,6 +844,10 @@ class Sales extends MY_Controller
             $note             = $this->sma->clear_tags($this->input->post('note'));
             $staff_note       = $this->sma->clear_tags($this->input->post('staff_note'));
 
+            $discount1        = $this->input->post('discount1');
+            $discount2        = $this->input->post('discount2');
+            $discount3        = $this->input->post('discount3');
+
             $total            = 0;
             $product_tax      = 0;
             $product_discount = 0;
@@ -942,6 +953,9 @@ class Sales extends MY_Controller
                 'order_discount_id' => $this->input->post('order_discount'),
                 'order_discount'    => $order_discount,
                 'total_discount'    => $total_discount,
+                'discount1'         => $discount1,
+                'discount2'         => $discount2,
+                'discount3'         => $discount3,
                 'product_tax'       => $product_tax,
                 'order_tax_id'      => $this->input->post('order_tax'),
                 'order_tax'         => $order_tax,

@@ -1864,7 +1864,7 @@ class Products extends MY_Controller
                         'ukuran'            => isset($value[3]) ? trim($value[3]) : '',  // Uk -> cf1
                         'isi'               => isset($value[4]) ? trim($value[4]) : '',  // Isi -> cf2
                         'kelas_barang'      => isset($value[5]) ? trim($value[5]) : '',  // Kelas Barang -> cf3
-                        'n'                 => isset($value[6]) ? trim($value[6]) : '',  // N -> cf4
+                        'quantity'          => isset($value[6]) ? trim($value[6]) : 0,  // quantity
                         'category_name'     => isset($value[7]) ? trim($value[7]) : '',
                         'subcategory_name'  => isset($value[8]) ? trim($value[8]) : '',
                         'cost'              => isset($value[9]) ? trim($value[9]) : 0,
@@ -1886,11 +1886,19 @@ class Products extends MY_Controller
                         $item['category_id'] = $cat_id;
                         $item['subcategory_id'] = $subcat_id ? $subcat_id : null;
     
-                        if ($product = $this->products_model->getProductByCode($item['code'])) {
-                            
-                            if ($this->products_model->updateProduct($product->id, $item, null, null, null, null, null, null)) {
+                        if ($product = $this->products_model->getProductByCode($item['code'])) {                            
+                             
+
+                            if(!empty($item['quantity'])){
+                                $this->products_model->updateQuantity($product->id, 1, $item['quantity'], null);
+                                $this->products_model->updateProductAwal($product->id, $item, null, null, null, null, null, null);
                                 $updated++;
-                            }                              
+                            }else{
+                                if ($this->products_model->updateProduct($product->id, $item, null, null, null, null, null, null)) {
+                                    $updated++;
+                                }
+                            }
+                            
                             $item = false;
                         }
                     } else {
