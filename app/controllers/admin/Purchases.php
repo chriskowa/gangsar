@@ -30,6 +30,7 @@ class Purchases extends MY_Controller
             'types'    => $this->digital_file_types,
             'max_size' => $this->allowed_file_size,
         ]);
+        $this->load->helper('pos');
     }
 
     /* -------------------------------------------------------------------------------------------------------------------------------- */
@@ -362,6 +363,7 @@ class Purchases extends MY_Controller
             $id = $this->input->get('id');
         }
         $purchase = $this->purchases_model->getPurchaseByID($id);
+        $items    = $this->getAllPurchaseItems($id);
         if ($purchase->payment_status == 'paid' && $purchase->grand_total == $purchase->paid) {
             $this->session->set_flashdata('error', lang('purchase_already_paid'));
             $this->sma->md();
@@ -423,6 +425,7 @@ class Purchases extends MY_Controller
         } else {
             $this->data['error']       = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['inv']         = $purchase;
+            $this->data['purchaseItems']         = $items;
             $this->data['payment_ref'] = ''; //$this->site->getReference('ppay');
             $this->data['modal_js']    = $this->site->modal_js();
 
