@@ -52,8 +52,8 @@ class Products extends MY_Controller
                 'name'              => $this->input->post('name'),
                 'type'              => $this->input->post('type'),
                 'brand'             => $this->input->post('brand'),
-                'size'             => $this->input->post('size'),
-                'business_location' => 1,
+                'size'              => $this->input->post('size'),
+                'business_location' => $this->input->post('business_location'),
                 'category_id'       => $this->input->post('category'),
                 'subcategory_id'    => $this->input->post('subcategory') ? $this->input->post('subcategory') : null,
                 'cost'              => $this->sma->formatDecimal($this->input->post('cost')),
@@ -146,7 +146,7 @@ class Products extends MY_Controller
 
                 // Mendapatkan data dari form
                 
-                $business_locations = $this->input->post('business_location');  
+                //$business_locations = $this->input->post('business_location');  
 
                 // Simpan data ke tabel sma_product_to_business_location
                 //$this->db->insert_batch('sma_product_to_business_location', $data);

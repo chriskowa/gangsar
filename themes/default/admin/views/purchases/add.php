@@ -20,6 +20,9 @@
     if (localStorage.getItem('powarehouse')) {
         localStorage.removeItem('powarehouse');
     }
+    if (localStorage.getItem('po_business_location')) {
+        localStorage.removeItem('po_business_location');
+    }
     if (localStorage.getItem('ponote')) {
         localStorage.removeItem('ponote');
     }
@@ -302,6 +305,35 @@
                             </div>
                         </div>
 
+                        
+                        
+                        <?php if ($Owner || $Admin || !$this->session->userdata('business_location_id')) {
+                    ?>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <?= lang('business_location', 'po_business_location'); ?>
+                                    <?php
+                                    
+                                    $bl[''] = '';                                
+                                    foreach ($business_locations as $business_location) {
+                                        $bl[$business_location->id] = $business_location->name;
+                                    }
+                                    echo form_dropdown('po_business_location', $bl, '', 'class="form-control" id="po_business_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"');
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                } else {
+                    $business_location_input = [
+                        'type'  => 'hidden',
+                        'name'  => 'po_business_location',
+                        'id'    => 'slbusiness_location',
+                        'value' => $this->session->userdata('business_location_id'),
+                    ];
+
+                    echo form_input($business_location_input);
+                } ?>
+
                         <div class="col-md-12">
                             <div class="panel panel-warning">
                                 <div
@@ -551,18 +583,18 @@
                         </div>
                     </div>
                     <div class="form-group">
-                            <label class="col-sm-4 control-label"><?= lang('business_location') ?></label>
-                            <div class="col-sm-8">
+                        <label class="col-sm-4 control-label"><?= lang('business_location') ?></label>
+                        <div class="col-sm-8">
 
-                                <?php
-                                $bl[''] = '';                                
-                                foreach ($business_locations as $business_location) {
-                                    $bl[$business_location->id] = $business_location->name;
-                                }
-                                echo form_dropdown('business_location', $bl, '', 'class="form-control" id="pbusiness_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"');
-                                ?>
-                            </div>
+                            <?php
+                            $bl[''] = '';                                
+                            foreach ($business_locations as $business_location) {
+                                $bl[$business_location->id] = $business_location->name;
+                            }
+                            echo form_dropdown('business_location', $bl, '', 'class="form-control" id="pbusiness_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"');
+                            ?>
                         </div>
+                    </div>
                     <div class="form-group">
                             <label class="col-sm-4 control-label"><?= ucwords(lang('size')) ?></label>
                             <div class="col-sm-8">
