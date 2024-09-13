@@ -185,6 +185,16 @@ if (!empty($variants)) {
                         }
                         ?>
                     </div>
+                    <div class="form-group all">
+                        <?= lang('business_location', 'business_location') ?>
+                        <?php
+                        $bl[''] = '';
+                        foreach ($business_location as $bk) {
+                            $bl[$bk->id] = $bk->name;
+                        }
+                        echo form_dropdown('category', $bl, ($_POST['business_location'] ?? ($business_location ? $business_location->id : '')), 'class="form-control select" id="business_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" required="required" style="width:100%"')
+                        ?>
+                    </div>
                     
                     <div class="form-group all">
                         <?= lang('category', 'category') ?>
@@ -193,7 +203,7 @@ if (!empty($variants)) {
                         foreach ($categories as $category) {
                             $cat[$category->id] = $category->name;
                         }
-                        echo form_dropdown('category', $cat, (isset($_POST['category']) ? $_POST['category'] : ($product ? $product->category_id : '')), 'class="form-control select" id="category" placeholder="' . lang('select') . ' ' . lang('category') . '" required="required" style="width:100%"')
+                        echo form_dropdown('business_location', $cat, (isset($_POST['business_location']) ? $_POST['business_location'] : ($product ? $product->business_location : '')), 'class="form-control select" id="category" placeholder="' . lang('select') . ' ' . lang('category') . '" required="required" style="width:100%"')
                         ?>
                     </div>
                     <div class="form-group all">

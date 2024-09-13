@@ -41,6 +41,7 @@ class Purchases extends MY_Controller
 
         $this->form_validation->set_message('is_natural_no_zero', $this->lang->line('no_zero_required'));
         $this->form_validation->set_rules('warehouse', $this->lang->line('warehouse'), 'required|is_natural_no_zero');
+        //$this->form_validation->set_rules('business_location', $this->lang->line('business_location'), 'required|is_natural_no_zero');
         $this->form_validation->set_rules('supplier', $this->lang->line('supplier'), 'required');
 
         $this->session->unset_userdata('csrf_token');
@@ -54,6 +55,7 @@ class Purchases extends MY_Controller
                 $date = date('Y-m-d H:i:s');
             }
             $warehouse_id     = $this->input->post('warehouse');
+            $business_location_id     = $this->input->post('po_business_location');
             $supplier_id      = $this->input->post('supplier');
             $status           = $this->input->post('status');
             $shipping         = $this->input->post('shipping') ? $this->input->post('shipping') : 0;
@@ -180,6 +182,7 @@ class Purchases extends MY_Controller
                 'supplier_id'              => $supplier_id,
                 'supplier'                 => $supplier,
                 'warehouse_id'             => $warehouse_id,
+                'business_location_id'      => $business_location_id,
                 'note'                     => $note,
                 'total'                    => $total,
                 'product_discount'         => $product_discount,
@@ -555,6 +558,7 @@ class Purchases extends MY_Controller
                 $date = $inv->date;
             }
             $warehouse_id     = $this->input->post('warehouse');
+            $business_location_id     = $this->input->post('po_business_location');
             $supplier_id      = $this->input->post('supplier');
             $status           = $this->input->post('status');
             $shipping         = $this->input->post('shipping') ? $this->input->post('shipping') : 0;
@@ -697,6 +701,7 @@ class Purchases extends MY_Controller
                 'supplier_id'              => $supplier_id,
                 'supplier'                 => $supplier,
                 'warehouse_id'             => $warehouse_id,
+                'business_location_id'     => $business_location_id,
                 'note'                     => $note,
                 'total'                    => $total,
                 'product_discount'         => $product_discount,
