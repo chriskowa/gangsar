@@ -41,7 +41,7 @@
                                 <div class="payment">
                                     <div class="form-group">
                                         <?= lang('amount', 'amount_1'); ?>
-                                        <input name="amount-paid" type="text" id="amount_1"
+                                        <input name="amount-paid" type="text" id="amount_1" readonly=""
                                                value="<?= $this->sma->formatDecimal($inv->grand_total - $inv->paid) ?>"
                                                class="pa form-control kb-pad amount" required="required"/>
                                     </div>
@@ -121,7 +121,11 @@
             <div class="form-group row">
               <ul>
                 <?php foreach ($purchaseItems as $purchaseItem) {
-                  echo "<li><input type='checkbox' value='$purchaseItem->id' data-amount='$purchaseItem->subtotal'>($purchaseItem->product_code) $purchaseItem->product_name @ ".numIndo($purchaseItem->subtotal)." </li>";
+                  if($purchaseItem->paid_status == 'paid'){
+
+                  }else{
+                    echo "<li><input checked='true' name='purchaseItem[$purchaseItem->id]' class='item-amount' onclick='amountClick()' type='checkbox' value='$purchaseItem->id' data-price='$purchaseItem->subtotal'>($purchaseItem->product_code) $purchaseItem->product_name @ ".numIndo($purchaseItem->subtotal,0)." </li>";
+                  }
                 }?>
               </ul>
             </div>
@@ -205,5 +209,18 @@
             startView: 2,
             forceParse: 0
         }).datetimepicker('update', new Date());
+
+        $('.item-amount').on('ifChanged', function() {
+            // alert(1)
+            calculateTotal();
+        });
     });
+
+    function calculateTotal() {
+    let total = 0;
+    $('.item-amount:checked').each(function() {
+        total += parseFloat($(this).data('price'));
+    });
+    $('#amount_1').val(total); // Display total in input
+}
 </script>
