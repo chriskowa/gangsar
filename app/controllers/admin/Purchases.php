@@ -1893,6 +1893,7 @@ class Purchases extends MY_Controller
     {
         $term        = $this->input->get('term', true);
         $supplier_id = $this->input->get('supplier_id', true);
+        $company = $this->input->get('company', true);
 
         if (strlen($term) < 1 || !$term) {
             die("<script type='text/javascript'>setTimeout(function(){ window.top.location.href = '" . admin_url('welcome') . "'; }, 10);</script>");
@@ -1906,7 +1907,8 @@ class Purchases extends MY_Controller
         $qty       = $strict ? null : $analyzed['quantity'] ?? null;
         $bprice    = $strict ? null : $analyzed['price']    ?? null;
 
-        $rows = $this->purchases_model->getProductNames($sr);
+        // $rows = $this->purchases_model->getProductNames($sr);
+        $rows = $this->purchases_model->getProductNamesNew($sr, 5, $company);
         if ($rows) {
             $r = 0;
             foreach ($rows as $row) {

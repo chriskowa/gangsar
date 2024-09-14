@@ -404,6 +404,20 @@ class Purchases_model extends CI_Model
         return false;
     }
 
+    public function getProductNamesNew($term, $limit, $company)
+    {
+        $this->db->where("(type = 'standard' AND (name LIKE '%" . $term . "%' OR code LIKE '%" . $term . "%' OR supplier1_part_no LIKE '%" . $term . "%' OR supplier2_part_no LIKE '%" . $term . "%' OR supplier3_part_no LIKE '%" . $term . "%' OR supplier4_part_no LIKE '%" . $term . "%' OR supplier5_part_no LIKE '%" . $term . "%' OR  concat(name, ' (', code, ')') LIKE '%" . $term . "%')) and business_location = $company");
+        $this->db->limit($limit);
+        $q = $this->db->get('products');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
+    }
+
     public function getProductOptionByID($id)
     {
         $q = $this->db->get_where('product_variants', ['id' => $id], 1);

@@ -113,7 +113,8 @@
                     dataType: "json",
                     data: {
                         term: request.term,
-                        supplier_id: $("#posupplier").val()
+                        supplier_id: $("#posupplier").val(),
+                        company: $("#po_business_location").val()
                     },
                     success: function (data) {
                         $(this).removeClass('ui-autocomplete-loading');
