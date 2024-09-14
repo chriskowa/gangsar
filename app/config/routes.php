@@ -58,3 +58,5 @@ $route['admin/quotes/(:num)']    = 'admin/quotes/index/$1';
 $route['admin/returns/(:num)']   = 'admin/returns/index/$1';
 $route['company-model-report']  = 'admin/reports/company_model_report';
 $route['company-stock-report']  = 'admin/products/stock_counts_print';
+/**/
+$route['monthly-result']  = 'admin/reports/monthly_result';

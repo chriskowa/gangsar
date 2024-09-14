@@ -53,7 +53,29 @@
                 <p>
                     <a href="<?= base_url('company-model-report') ?>" target="_blank" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Company Report Monel</a>
                 </p>
-                <div class="table-responsive">
+                <form class="form-horizontal" target="_blank" method="get" action="<?= base_url('monthly-result') ?>">
+                    <div class="form-group row">
+                        <label class="col-md-2">Start Date</label>
+                        <div class="col-md-2">
+                            <input class="form-control" type="date" name="start_date" id="start_date" value="<?= date("Y-m-d")?>">
+                        </div>
+                        <label class="col-md-2">End Date</label>
+                        <div class="col-md-2">
+                            <input class="form-control" type="date" name="end_date" id="end_date" value="<?= date("Y-m-d")?>">
+                        </div>
+                        <label class="col-md-2">Model</label>
+                        <div class="col-md-2">
+                            <select class="form-control" name="model">
+                                <option value="paid">Paid</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-sm btn-info">Search</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive" style="display: none;">
                     <table class="table table-bordered table-striped dfTable reports-table">
                         <thead>
                         <tr class="year_roller">

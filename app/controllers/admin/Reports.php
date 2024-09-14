@@ -2748,6 +2748,11 @@ class Reports extends MY_Controller
         $this->page_construct('reports/monthly', $meta, $this->data);
     }
 
+    public function monthly_result($value='')
+    {
+        $this->load->view($this->theme . 'reports/monthly_result');
+    }
+
     public function payments()
     {
         $this->sma->checkPermissions('payments');
