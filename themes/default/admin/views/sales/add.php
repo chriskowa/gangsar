@@ -230,7 +230,8 @@
                     data: {
                         term: request.term,
                         warehouse_id: $("#slwarehouse").val(),
-                        customer_id: $("#slcustomer").val()
+                        customer_id: $("#slcustomer").val(),
+                        company: $("#pbusiness_location").val(),
                     },
                     success: function (data) {
                         $(this).removeClass('ui-autocomplete-loading');

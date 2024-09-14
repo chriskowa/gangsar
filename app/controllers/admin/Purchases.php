@@ -1197,7 +1197,8 @@ class Purchases extends MY_Controller
         $detail_link      = anchor('admin/purchases/view/$1', '<i class="fa fa-file-text-o"></i> ' . lang('purchase_details'));
         $payments_link    = anchor('admin/purchases/payments/$1', '<i class="fa fa-money"></i> ' . lang('view_payments'), 'data-toggle="modal" data-target="#myModal"');
         $add_payment_link = anchor('admin/purchases/add_payment/$1', '<i class="fa fa-money"></i> ' . lang('add_payment'), 'data-toggle="modal" data-target="#myModal"');
-        $email_link       = anchor('admin/purchases/email/$1', '<i class="fa fa-envelope"></i> ' . lang('email_purchase'), 'data-toggle="modal" data-target="#myModal"');
+        $email_link       = anchor('admin/purchases/pdf_yuan/$1', '<i class="fa fa-envelope"></i> ' . lang('download_pdf'). '(Yuan)');
+        // $email_link       = anchor('admin/purchases/email/$1', '<i class="fa fa-envelope"></i> ' . lang('email_purchase'), 'data-toggle="modal" data-target="#myModal"');
         $edit_link        = anchor('admin/purchases/edit/$1', '<i class="fa fa-edit"></i> ' . lang('edit_purchase'));
         $pdf_link         = anchor('admin/purchases/pdf/$1', '<i class="fa fa-file-pdf-o"></i> ' . lang('download_pdf'));
         $print_barcode    = anchor('admin/products/print_barcodes/?purchase=$1', '<i class="fa fa-print"></i> ' . lang('print_barcodes'));
@@ -1371,6 +1372,42 @@ class Purchases extends MY_Controller
         $this->data['ttd']             = $this->ttdPuchase();
         $name                          = $this->lang->line('purchase') . '_' . str_replace('/', '_', $inv->reference_no) . '.pdf';
         $html                          = $this->load->view($this->theme . 'purchases/pdf', $this->data, true);
+        if (!$this->Settings->barcode_img) {
+            $html = preg_replace("'\<\?xml(.*)\?\>'", '', $html);
+        }
+        if ($view) {
+            echo $html;
+            die();
+        } elseif ($save_bufffer) {
+            return $this->sma->generate_pdf($html, $name, $save_bufffer);
+        }
+        $this->sma->generate_pdf($html, $name);
+    }
+
+    public function pdf_yuan($purchase_id = null, $view = null, $save_bufffer = null)
+    {
+        $this->load->helper('pos');
+        $this->sma->checkPermissions();
+
+        if ($this->input->get('id')) {
+            $purchase_id = $this->input->get('id');
+        }
+
+        $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
+        $inv                 = $this->purchases_model->getPurchaseByID($purchase_id);
+        if (!$this->session->userdata('view_right')) {
+            $this->sma->view_rights($inv->created_by);
+        }
+        $this->data['rows']            = $this->purchases_model->getAllPurchaseItems($purchase_id);
+        $this->data['supplier']        = $this->site->getCompanyByID($inv->supplier_id);
+        $this->data['warehouse']       = $this->site->getWarehouseByID($inv->warehouse_id);
+        $this->data['created_by']      = $this->site->getUser($inv->created_by);
+        $this->data['inv']             = $inv;
+        $this->data['return_purchase'] = $inv->return_id ? $this->purchases_model->getPurchaseByID($inv->return_id) : null;
+        $this->data['return_rows']     = $inv->return_id ? $this->purchases_model->getAllPurchaseItems($inv->return_id) : null;
+        $this->data['ttd']             = $this->ttdPuchase();
+        $name                          = $this->lang->line('purchase') . '_' . str_replace('/', '_', $inv->reference_no) . '.pdf';
+        $html                          = $this->load->view($this->theme . 'purchases/pdf-yuan', $this->data, true);
         if (!$this->Settings->barcode_img) {
             $html = preg_replace("'\<\?xml(.*)\?\>'", '', $html);
         }
