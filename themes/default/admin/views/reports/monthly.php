@@ -70,6 +70,16 @@
                                 <option value="pending">Pending</option>
                             </select>
                         </div>
+                        <label class="col-md-2">Company</label>
+                        <div class="col-md-2">
+                            <select class="form-control" name="company">
+                                <?php 
+                                    foreach ($this->site->getAllBusiness_location() as $r) {
+                                        echo "<option value='".$r->id."'>".$r->name."</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
                         <div class="col-md-2">
                             <button class="btn btn-sm btn-info">Search</button>
                         </div>

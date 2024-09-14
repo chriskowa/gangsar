@@ -16,6 +16,8 @@
 	$start_date = $this->input->get('start_date');
 	$end_date = $this->input->get('end_date');
 	$model = $this->input->get('model');
+	$company = $this->input->get('company');
+	$business_location = $this->db->where('id', $company)->get('business_location')->row();
 	?>
 	<table width="100%">
 		<tr>
@@ -32,6 +34,11 @@
 			<td>Payment Status</td>
 			<td>:</td>
 			<td><?= $model ?></td>
+		</tr>
+		<tr>
+			<td>Company</td>
+			<td>:</td>
+			<td><?= $business_location->name ?></td>
 		</tr>
 	</table>
 	<?php 
