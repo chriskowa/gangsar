@@ -2410,6 +2410,7 @@ class Sales extends MY_Controller
         $term         = $this->input->get('term', true);
         $warehouse_id = $this->input->get('warehouse_id', true);
         $customer_id  = $this->input->get('customer_id', true);
+        $company  = $this->input->get('company', true);
 
         if (strlen($term) < 1 || !$term) {
             die("<script type='text/javascript'>setTimeout(function(){ window.top.location.href = '" . admin_url('welcome') . "'; }, 10);</script>");
@@ -2426,7 +2427,9 @@ class Sales extends MY_Controller
         $warehouse      = $this->site->getWarehouseByID($warehouse_id);
         $customer       = $this->site->getCompanyByID($customer_id);
         $customer_group = $this->site->getCustomerGroupByID($customer->customer_group_id);
-        $rows           = $this->sales_model->getProductNames($sr, $warehouse_id, $pos);
+        // $rows           = $this->sales_model->getProductNames($sr, $warehouse_id, $pos);
+        $rows           = $this->sales_model->getProductNamesNew($sr, $warehouse_id, $pos, 5, $company);
+        // getProductNamesNew($term, $warehouse_id, $pos, $limit, $company)
         if ($rows) {
             $r = 0;
             foreach ($rows as $row) {
