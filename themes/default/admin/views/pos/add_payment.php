@@ -130,6 +130,18 @@
 
             </div>
 
+            <div class="form-group row">
+              <ul>
+                <?php foreach ($purchaseItems as $purchaseItem) {
+                  if($purchaseItem->paid_status == 'paid'){
+
+                  }else{
+                    echo "<li><input checked='true' name='purchaseItem[$purchaseItem->id]' class='item-amount' onclick='amountClick()' type='checkbox' value='$purchaseItem->id' data-price='$purchaseItem->subtotal'>($purchaseItem->product_code) $purchaseItem->product_name @ ".numIndo($purchaseItem->subtotal,0)." </li>";
+                  }
+                }?>
+              </ul>
+            </div>
+            
             <div class="form-group">
                 <?= lang('attachment', 'attachment') ?>
                 <input id="attachment" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile" data-show-upload="false" data-show-preview="false"
@@ -297,5 +309,18 @@
             startView: 2,
             forceParse: 0
         }).datetimepicker('update', new Date());
+
+        $('.item-amount').on('ifChanged', function() {
+            calculateTotal();
+        });
+
     });
+
+function calculateTotal() {
+    let total = 0;
+    $('.item-amount:checked').each(function() {
+        total += parseFloat($(this).data('price'));
+    });
+    $('#amount_1').val(total); // Display total in input
+}
 </script>

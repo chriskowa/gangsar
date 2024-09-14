@@ -118,6 +118,13 @@
 
             </div>
 
+            <div class="form-group row">
+              <ul>
+                <?php foreach ($purchaseItems as $purchaseItem) {
+                  echo "<li><input type='checkbox' value='$purchaseItem->id' data-amount='$purchaseItem->subtotal'>($purchaseItem->product_code) $purchaseItem->product_name @ ".numIndo($purchaseItem->subtotal)." </li>";
+                }?>
+              </ul>
+            </div>
             <div class="form-group">
                 <?= lang('attachment', 'attachment') ?>
                 <input id="attachment" type="file" data-browse-label="<?= lang('browse'); ?>" name="userfile" data-show-upload="false" data-show-preview="false"

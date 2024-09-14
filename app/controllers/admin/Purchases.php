@@ -85,6 +85,7 @@ class Purchases extends MY_Controller
                 $item_unit          = $_POST['product_unit'][$r];
                 $item_quantity      = $_POST['product_base_quantity'][$r];
                 $business_location  = $_POST['business_location_unit'][$r];
+                $yuan_price  = $_POST['yuan_price'][$r];
                 $size  = $_POST['size_input'][$r];
 
                 if (isset($item_code) && isset($real_unit_cost) && isset($unit_cost) && isset($item_quantity)) {
@@ -151,7 +152,9 @@ class Purchases extends MY_Controller
                         'status'            => $status,
                         'supplier_part_no'  => $supplier_part_no,
                         // 'business_location' => $item_bl,
-                        'business_location' => $business_location,
+                        // 'business_location' => $business_location,
+                        'business_location' => $business_location_id,
+                        'yuan_price' => $yuan_price,
                         'size' => $size,
                     ];
 
@@ -366,7 +369,7 @@ class Purchases extends MY_Controller
             $id = $this->input->get('id');
         }
         $purchase = $this->purchases_model->getPurchaseByID($id);
-        $items    = $this->getAllPurchaseItems($id);
+        $items    = $this->purchases_model->getAllPurchaseItems($id);
         if ($purchase->payment_status == 'paid' && $purchase->grand_total == $purchase->paid) {
             $this->session->set_flashdata('error', lang('purchase_already_paid'));
             $this->sma->md();
@@ -423,6 +426,11 @@ class Purchases extends MY_Controller
         }
 
         if ($this->form_validation->run() == true && $this->purchases_model->addPayment($payment)) {
+            $purchaseItems = $this->input->post('purchaseItem');
+
+            $this->db->where_in('id', $purchaseItems);
+            $this->db->update('purchase_items', ['paid_status'=>'paid']);
+
             $this->session->set_flashdata('message', lang('payment_added'));
             redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -594,6 +602,7 @@ class Purchases extends MY_Controller
                 $item_unit          = $_POST['product_unit'][$r];
                 $item_quantity      = $_POST['product_base_quantity'][$r];
                 $business_location  = $_POST['business_location_unit'][$r];
+                $yuan_price  = $_POST['yuan_price'][$r];
                 $size  = $_POST['size_input'][$r];
 
                 if ($status == 'received' || $status == 'partial') {
@@ -666,7 +675,9 @@ class Purchases extends MY_Controller
                         'real_unit_cost'    => $real_unit_cost,
                         'supplier_part_no'  => $supplier_part_no,
                         'date'              => date('Y-m-d', strtotime($date)),
-                        'business_location'  => $business_location,
+                        // 'business_location'  => $business_location,
+                        'business_location'  => $business_location_id,
+                        'yuan_price'  => $yuan_price,
                         'size'  => $size,
                     ];
 
@@ -760,6 +771,7 @@ class Purchases extends MY_Controller
                 $row->pprice = $this->sma->formatDecimal($item->price, 0); //as harga di ui
                 $row->potherPrice = $this->sma->formatDecimal($item->harga_cv, 0);
                 $row->business_location = $item->business_location;
+                $row->yuan_price = $item->yuan_price;
                 $row->size = $item->size;
                 $row->expiry           = (($item->expiry && $item->expiry != '0000-00-00') ? $this->sma->hrsd($item->expiry) : '');
                 $row->base_quantity    = $item->quantity;

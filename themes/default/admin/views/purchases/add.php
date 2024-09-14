@@ -53,6 +53,7 @@
     localStorage.setItem('podiscount', '<?= $quote->order_discount_id ?>');
     localStorage.setItem('potax2', '<?= $quote->order_tax_id ?>');
     localStorage.setItem('poshipping', '<?= $quote->shipping ?>');
+    localStorage.setItem('yuan_price', 0);
     <?php if ($quote->supplier_id) {
         ?>
         localStorage.setItem('posupplier', '<?= $quote->supplier_id ?>');
@@ -304,11 +305,8 @@
                                 <input id="document" type="file" data-browse-label="<?= lang('browse'); ?>" name="attachments[]" multiple data-show-upload="false" data-show-preview="false" class="form-control file">
                             </div>
                         </div>
-
                         
-                        
-                        <?php if ($Owner || $Admin || !$this->session->userdata('business_location_id')) {
-                    ?>
+                        <?php if ($Owner || $Admin || !$this->session->userdata('business_location_id')) { ?>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <?= lang('business_location', 'po_business_location'); ?>
@@ -582,7 +580,7 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label class="col-sm-4 control-label"><?= lang('business_location') ?></label>
                         <div class="col-sm-8">
 
@@ -593,6 +591,13 @@
                             }
                             echo form_dropdown('business_location', $bl, '', 'class="form-control" id="pbusiness_location" placeholder="' . lang('select') . ' ' . lang('business_location') . '" style="width:100%"');
                             ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="yuan_price" class="col-sm-4 control-label"><?= lang('yuan_price') ?></label>
+
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="yuan_price">
                         </div>
                     </div>
                     <div class="form-group">

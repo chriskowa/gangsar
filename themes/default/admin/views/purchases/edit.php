@@ -466,7 +466,7 @@
                             <input type="text" class="form-control" id="pquantity">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                       <label class="col-sm-4 control-label"><?= ucwords(lang('business_location')) ?></label>
                       <div class="col-sm-8">
                           <?php

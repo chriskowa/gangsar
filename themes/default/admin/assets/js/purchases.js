@@ -373,6 +373,7 @@ $(document).ready(function () {
         // $('#pprice').val(unit_price);
         $('#potherPrice').val(item.row.potherPrice);
         $('#pprice').val(item.row.pprice);
+        $('#yuan_price').val(item.row.yuan_price);
         $('#punit_cost').val(formatDecimal(parseFloat(unit_cost) + parseFloat(pr_tax_val)));
         $('#poption').select2('val', item.row.option);
         $('#old_cost').val(unit_cost);
@@ -506,6 +507,7 @@ $(document).ready(function () {
         }
 
         var unit = $('#punit').val();
+        var yuan_price = $('#yuan_price').val();
         var base_quantity = parseFloat($('#pquantity').val());
         if (unit != poitems[item_id].row.base_unit) {
             $.each(poitems[item_id].units, function () {
@@ -527,6 +529,7 @@ $(document).ready(function () {
             (poitems[item_id].row.real_unit_cost = parseFloat($('#pcost').val())),
             (poitems[item_id].row.potherPrice = parseFloat($('#potherPrice').val())),
             (poitems[item_id].row.pprice = parseFloat($('#pprice').val())),
+            (poitems[item_id].row.yuan_price = parseFloat($('#yuan_price').val())),
             (poitems[item_id].row.tax_rate = new_pr_tax),
             (poitems[item_id].tax_rate = new_pr_tax_rate),
             (poitems[item_id].row.discount = $('#pdiscount').val() ? $('#pdiscount').val() : '0'),
@@ -698,6 +701,7 @@ function loadItems() {
                 combo_items = item.combo_items,
                 item_cost = item.row.cost,
                 item_price = item.row.pprice,
+                item_yuan_price = item.row.yuan_price,
                 item_harga_cv = item.row.potherPrice,
                 item_business_location = item.row.business_location,
                 item_size = item.row.size,
@@ -842,6 +846,8 @@ function loadItems() {
                 product_unit +
                 '"><input name="business_location_unit[]" type="hidden" class="rbusiness_location" value="' +
                 item_business_location +
+                '"><input name="yuan_price[]" type="hidden" class="yuan_price" value="' +
+                item_yuan_price +
                 '"><input name="product_base_quantity[]" type="hidden" class="rbase_quantity" value="' +
                 base_quantity +
                 '"><input name="size_input[]" type="hidden" value="' +
