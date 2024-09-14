@@ -505,6 +505,13 @@
                             <div id="poptions-div"></div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="yuan_price" class="col-sm-4 control-label"><?= ucwords(lang('yuan_price')) ?></label>
+
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="yuan_price">
+                        </div>
+                    </div>
                     <?php if ($Settings->product_discount) { ?>
                         <div class="form-group">
                           <label for="pdiscount"

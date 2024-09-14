@@ -602,7 +602,7 @@ class Purchases extends MY_Controller
                 $item_unit          = $_POST['product_unit'][$r];
                 $item_quantity      = $_POST['product_base_quantity'][$r];
                 $business_location  = $_POST['business_location_unit'][$r];
-                $yuan_price  = $_POST['yuan_price'][$r];
+                $yuan_price  = $this->sma->formatDecimal($_POST['yuan_price'][$r]);
                 $size  = $_POST['size_input'][$r];
 
                 if ($status == 'received' || $status == 'partial') {
@@ -771,7 +771,7 @@ class Purchases extends MY_Controller
                 $row->pprice = $this->sma->formatDecimal($item->price, 0); //as harga di ui
                 $row->potherPrice = $this->sma->formatDecimal($item->harga_cv, 0);
                 $row->business_location = $item->business_location;
-                $row->yuan_price = $item->yuan_price;
+                $row->yuan_price = $this->sma->formatDecimal($item->yuan_price,0);
                 $row->size = $item->size;
                 $row->expiry           = (($item->expiry && $item->expiry != '0000-00-00') ? $this->sma->hrsd($item->expiry) : '');
                 $row->base_quantity    = $item->quantity;
